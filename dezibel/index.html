@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dezibel und Logarithmische Skalen</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 2.2em;
+            font-weight: 600;
+        }
+        .subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            margin-bottom: 40px;
+            font-size: 1.1em;
+        }
+        .container {
+            background: white;
+            border-radius: 8px;
+            padding: 40px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .intro {
+            background: #ecf0f1;
+            padding: 20px;
+            border-radius: 6px;
+            margin-bottom: 35px;
+            border-left: 4px solid #e74c3c;
+            line-height: 1.6;
+            color: #555;
+        }
+        .visualizations {
+            display: grid;
+            gap: 20px;
+        }
+        .viz-card {
+            background: #fafafa;
+            padding: 25px;
+            border-radius: 6px;
+            border-left: 4px solid #e74c3c;
+            transition: transform 0.2s, box-shadow 0.2s;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+        .viz-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+        }
+        .viz-card.scale {
+            border-left-color: #e74c3c;
+        }
+        .viz-card.calculator {
+            border-left-color: #f39c12;
+        }
+        .viz-card.relationship {
+            border-left-color: #9b59b6;
+        }
+        .viz-card.properties {
+            border-left-color: #16a085;
+        }
+        .viz-title {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        .viz-subtitle {
+            font-size: 0.95em;
+            color: #7f8c8d;
+            margin-bottom: 12px;
+            font-style: italic;
+        }
+        .viz-description {
+            color: #555;
+            line-height: 1.6;
+            font-size: 0.95em;
+        }
+        .properties {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 6px;
+            margin-top: 35px;
+            border: 1px solid #ddd;
+        }
+        .properties h3 {
+            color: #2c3e50;
+            margin: 0 0 15px 0;
+            font-size: 1.1em;
+        }
+        .properties ul {
+            margin: 0;
+            padding-left: 25px;
+        }
+        .properties li {
+            color: #555;
+            line-height: 1.8;
+            margin: 8px 0;
+        }
+        .properties strong {
+            color: #2c3e50;
+        }
+        .back-link {
+            text-align: center;
+            margin-top: 30px;
+        }
+        .back-link a {
+            color: #3498db;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1.05em;
+        }
+        .back-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <h1>Dezibel und Logarithmische Skalen</h1>
+    <div class="subtitle">Logarithmische Darstellung in der Signalverarbeitung</div>
+
+    <div class="container">
+        <div class="intro">
+            Die Dezibel-Skala (dB) ist eine logarithmische Maßeinheit, die in der Signalverarbeitung,
+            Akustik und Elektrotechnik zur Darstellung von Verhältnissen verwendet wird.
+            Sie ermöglicht die kompakte Darstellung großer Wertebereiche und macht Multiplikationen
+            zu einfachen Additionen.
+        </div>
+
+        <div class="visualizations">
+            <a href="dezibel_skala.html" class="viz-card scale">
+                <div class="viz-title">Dezibel-Skala</div>
+                <div class="viz-subtitle">Linear vs. Logarithmisch</div>
+                <div class="viz-description">
+                    Vergleich zwischen linearer und logarithmischer (dB) Darstellung von Amplituden.
+                    Die Visualisierung zeigt, wie die Dezibel-Skala große Wertebereiche komprimiert
+                    und wichtige Verhältnisse wie -3dB (halbe Leistung) oder -6dB (halbe Amplitude) darstellt.
+                </div>
+            </a>
+
+            <a href="dezibel_umrechner.html" class="viz-card calculator">
+                <div class="viz-title">Dezibel-Umrechner</div>
+                <div class="viz-subtitle">Interaktiver Rechner mit Rechenregeln</div>
+                <div class="viz-description">
+                    Umrechnung zwischen linearen Werten und Dezibel für Amplituden und Leistungen.
+                    Enthält wichtige Rechenregeln, Schnellreferenzen und zeigt den Unterschied zwischen
+                    20·log₁₀ (Amplitude) und 10·log₁₀ (Leistung). Perfekt zum praktischen Rechnen.
+                </div>
+            </a>
+
+            <a href="amplitude_leistung.html" class="viz-card relationship">
+                <div class="viz-title">Amplitude und Leistung</div>
+                <div class="viz-subtitle">Der quadratische Zusammenhang P = A²</div>
+                <div class="viz-description">
+                    Visualisierung des fundamentalen Zusammenhangs zwischen Amplitude und Leistung.
+                    Zeigt anschaulich, warum Leistungs-dB = 2 × Amplituden-dB und erklärt den Unterschied
+                    zwischen den Faktoren 10 und 20 in der dB-Berechnung mit praktischen Beispielen.
+                </div>
+            </a>
+
+            <a href="logarithmus_eigenschaften.html" class="viz-card properties">
+                <div class="viz-title">Logarithmus-Eigenschaften</div>
+                <div class="viz-subtitle">Warum Multiplikation zu Addition wird</div>
+                <div class="viz-description">
+                    Interaktive Darstellung der wichtigsten Logarithmus-Eigenschaften und Rechenregeln.
+                    Vergleicht lineare und logarithmische Skalen, zeigt alle Rechengesetze mit Beispielen
+                    und erklärt, warum der Logarithmus in der Signalverarbeitung so nützlich ist.
+                </div>
+            </a>
+        </div>
+
+        <div class="properties">
+            <h3>Wichtige Konzepte</h3>
+            <ul>
+                <li><strong>Amplitudenverhältnis:</strong> L<sub>dB</sub> = 20 · log<sub>10</sub>(A / A<sub>0</sub>)</li>
+                <li><strong>Leistungsverhältnis:</strong> L<sub>dB</sub> = 10 · log<sub>10</sub>(P / P<sub>0</sub>)</li>
+                <li><strong>0 dB:</strong> Entspricht dem Referenzwert (keine Verstärkung/Dämpfung)</li>
+                <li><strong>-3 dB:</strong> Halbe Leistung oder 70.7% der Amplitude (wichtig für Grenzfrequenzen)</li>
+                <li><strong>-6 dB:</strong> Halbe Amplitude oder ein Viertel der Leistung</li>
+                <li><strong>+20 dB:</strong> Zehnfache Amplitude oder hundertfache Leistung</li>
+                <li><strong>Addition statt Multiplikation:</strong> Verstärkungen werden addiert: +6dB + 6dB = +12dB</li>
+            </ul>
+        </div>
+
+        <div class="back-link">
+            <a href="../index.html">← Zurück zur Übersicht</a>
+        </div>
+    </div>
+</body>
+</html>

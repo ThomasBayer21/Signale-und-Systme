@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cosinusförmige Signale</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 2em;
+            font-weight: 600;
+        }
+        .description {
+            text-align: center;
+            color: #555;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+        .container {
+            background: white;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .info-box {
+            background: #ecf0f1;
+            padding: 20px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            border-left: 4px solid #f39c12;
+        }
+        .info-box h3 {
+            margin: 0 0 10px 0;
+            font-size: 1.1em;
+            color: #2c3e50;
+        }
+        .info-box p {
+            margin: 5px 0;
+            color: #555;
+            line-height: 1.5;
+        }
+        .equation {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 6px;
+            text-align: center;
+            font-family: 'Courier New', monospace;
+            font-size: 1.2em;
+            margin: 20px 0;
+            color: #2c3e50;
+            border: 1px solid #ddd;
+        }
+        .controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 25px 0;
+            padding: 25px;
+            background: #fafafa;
+            border-radius: 6px;
+            border: 1px solid #e0e0e0;
+        }
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .control-group label {
+            font-size: 14px;
+            color: #555;
+            font-weight: 500;
+        }
+        .value-display {
+            font-size: 1.1em;
+            color: #f39c12;
+            font-weight: 600;
+        }
+        input[type="range"] {
+            width: 100%;
+            height: 4px;
+            border-radius: 2px;
+            background: #ddd;
+            outline: none;
+            -webkit-appearance: none;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #f39c12;
+            cursor: pointer;
+        }
+        input[type="range"]::-moz-range-thumb {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #f39c12;
+            cursor: pointer;
+            border: none;
+        }
+        .canvas-container {
+            text-align: center;
+            margin: 30px 0;
+        }
+        canvas {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background: white;
+            max-width: 100%;
+        }
+        .legend {
+            display: flex;
+            gap: 25px;
+            justify-content: center;
+            margin: 20px 0;
+            padding: 15px;
+            background: #fafafa;
+            border-radius: 6px;
+            border: 1px solid #e0e0e0;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .legend-color {
+            width: 30px;
+            height: 3px;
+            border-radius: 2px;
+        }
+        .phase-info {
+            background: #fff8f0;
+            padding: 20px;
+            border-radius: 6px;
+            text-align: center;
+            margin: 20px 0;
+            border: 1px solid #f39c12;
+        }
+        .phase-info h4 {
+            color: #e67e22;
+            margin: 0 0 10px 0;
+            font-weight: 500;
+        }
+        .phase-info p {
+            margin: 5px 0;
+            color: #555;
+            line-height: 1.6;
+        }
+        .back-link {
+            text-align: center;
+            margin-top: 30px;
+        }
+        .back-link a {
+            color: #3498db;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .back-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <h1>Cosinusförmige Signale</h1>
+    <div class="description">Beziehung zwischen Sinus und Cosinus - Phasenverschiebung um π/2</div>
+
+    <div class="container">
+        <div class="info-box">
+            <h3>Anleitung</h3>
+            <p>Passe die Parameter an und beobachte den Zusammenhang zwischen sin(t) und cos(t)</p>
+            <p>Beachte: Der Cosinus ist ein um π/2 (90°) phasenverschobener Sinus</p>
+        </div>
+
+        <div class="equation" id="equation">
+            cos(ωt + φ) = sin(ωt + φ + π/2)
+        </div>
+
+        <div class="controls">
+            <div class="control-group">
+                <label>Amplitude A: <span class="value-display" id="amp-value">1.0</span></label>
+                <input type="range" id="amplitude" min="0.5" max="2" step="0.1" value="1">
+            </div>
+            <div class="control-group">
+                <label>Frequenz ω: <span class="value-display" id="freq-value">2.0</span> rad/s</label>
+                <input type="range" id="frequency" min="0.5" max="5" step="0.5" value="2">
+            </div>
+            <div class="control-group">
+                <label>Phase φ: <span class="value-display" id="phase-value">0.0</span> rad</label>
+                <input type="range" id="phase" min="0" max="6.28" step="0.157" value="0">
+            </div>
+        </div>
+
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-color" style="background: #2196F3;"></div>
+                <span>Sinus: A·sin(ωt + φ)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #F44336;"></div>
+                <span>Cosinus: A·cos(ωt + φ)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #999; border-style: dashed;"></div>
+                <span>Nulldurchgänge</span>
+            </div>
+        </div>
+
+        <div class="canvas-container">
+            <canvas id="signal-canvas" width="800" height="400"></canvas>
+        </div>
+
+        <div class="phase-info">
+            <h4>Phasenbeziehung</h4>
+            <p>Der Cosinus eilt dem Sinus um π/2 (90°) voraus</p>
+            <p>Nulldurchgang Cosinus bei t=0: sin(0) = 0, cos(0) = 1</p>
+            <p>Für φ=0: Die gestrichelten Linien zeigen die π/2-Verschiebung</p>
+        </div>
+
+        <div class="back-link">
+            <a href="index.html">← Zurück zur Übersicht</a>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('signal-canvas');
+        const ctx = canvas.getContext('2d');
+
+        let amplitude = 1.0;
+        let frequency = 2.0;
+        let phase = 0.0;
+
+        document.getElementById('amplitude').addEventListener('input', (e) => {
+            amplitude = parseFloat(e.target.value);
+            document.getElementById('amp-value').textContent = amplitude.toFixed(1);
+            updateEquation();
+            draw();
+        });
+
+        document.getElementById('frequency').addEventListener('input', (e) => {
+            frequency = parseFloat(e.target.value);
+            document.getElementById('freq-value').textContent = frequency.toFixed(1);
+            updateEquation();
+            draw();
+        });
+
+        document.getElementById('phase').addEventListener('input', (e) => {
+            phase = parseFloat(e.target.value);
+            document.getElementById('phase-value').textContent = phase.toFixed(2);
+            updateEquation();
+            draw();
+        });
+
+        function updateEquation() {
+            const A = amplitude.toFixed(1);
+            const omega = frequency.toFixed(1);
+            const phi = phase.toFixed(2);
+
+            let sinEq = `${A}·sin(${omega}t`;
+            let cosEq = `${A}·cos(${omega}t`;
+
+            if (parseFloat(phi) !== 0) {
+                sinEq += ` + ${phi}`;
+                cosEq += ` + ${phi}`;
+            }
+
+            sinEq += ')';
+            cosEq += ')';
+
+            // Build the right side with amplitude
+            let rightSide = `${A}·sin(${omega}t`;
+            if (parseFloat(phi) !== 0) {
+                rightSide += ` + ${phi}`;
+            }
+            rightSide += ' + π/2)';
+
+            document.getElementById('equation').textContent = `${cosEq} = ${rightSide}`;
+        }
+
+        function draw() {
+            const width = canvas.width;
+            const height = canvas.height;
+            const centerY = height / 2;
+
+            // Time range: from -π to 3π
+            const tStart = -Math.PI;
+            const tEnd = 3 * Math.PI;
+            const tRange = tEnd - tStart;
+            const pixelsPerRad = width / tRange;
+
+            ctx.clearRect(0, 0, width, height);
+
+            // Grid and axes
+            ctx.strokeStyle = '#f0f0f0';
+            ctx.lineWidth = 1;
+
+            // Horizontal grid lines
+            for (let i = 0; i <= 8; i++) {
+                ctx.beginPath();
+                ctx.moveTo(0, (i / 8) * height);
+                ctx.lineTo(width, (i / 8) * height);
+                ctx.stroke();
+            }
+
+            // Vertical grid lines (every π/2)
+            for (let i = -2; i <= 6; i++) {
+                const t = i * Math.PI / 2;
+                const x = (t - tStart) * pixelsPerRad;
+                if (x >= 0 && x <= width) {
+                    ctx.beginPath();
+                    ctx.moveTo(x, 0);
+                    ctx.lineTo(x, height);
+                    ctx.stroke();
+                }
+            }
+
+            // Center axis (t-axis)
+            ctx.strokeStyle = '#999';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(0, centerY);
+            ctx.lineTo(width, centerY);
+            ctx.stroke();
+
+            // Y-axis at t=0 (more visible)
+            const yAxisX = (0 - tStart) * pixelsPerRad;
+            ctx.strokeStyle = '#666';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(yAxisX, 0);
+            ctx.lineTo(yAxisX, height);
+            ctx.stroke();
+
+            // Time axis labels
+            ctx.fillStyle = '#666';
+            ctx.font = '12px sans-serif';
+            ctx.textAlign = 'center';
+            for (let i = -1; i <= 3; i++) {
+                const t = i * Math.PI;
+                const x = (t - tStart) * pixelsPerRad;
+                if (x >= 0 && x <= width) {
+                    let label;
+                    if (i === -1) label = '-π';
+                    else if (i === 0) label = '0';
+                    else label = `${i}π`;
+                    ctx.fillText(label, x, centerY + 20);
+                }
+            }
+
+            // Amplitude lines
+            const yPlus = centerY - amplitude * (height / 4);
+            const yMinus = centerY + amplitude * (height / 4);
+
+            ctx.strokeStyle = '#999';
+            ctx.lineWidth = 1;
+            ctx.setLineDash([3, 3]);
+
+            // +A line
+            ctx.beginPath();
+            ctx.moveTo(0, yPlus);
+            ctx.lineTo(width, yPlus);
+            ctx.stroke();
+
+            // -A line
+            ctx.beginPath();
+            ctx.moveTo(0, yMinus);
+            ctx.lineTo(width, yMinus);
+            ctx.stroke();
+
+            ctx.setLineDash([]);
+
+            // Amplitude axis labels
+            ctx.textAlign = 'right';
+            ctx.fillText('+A', 35, yPlus + 5);
+            ctx.fillText('-A', 35, yMinus + 5);
+
+            // Draw zero crossings for sine (where sin(ωt+φ) = 0)
+            ctx.strokeStyle = 'rgba(33, 150, 243, 0.3)'; // Light blue, 30% opacity
+            ctx.lineWidth = 1;
+            ctx.setLineDash([4, 6]);
+
+            // Sine zero crossings: ωt+φ = nπ => t = (nπ-φ)/ω
+            for (let n = -2; n <= 6; n++) {
+                const t = (n * Math.PI - phase) / frequency;
+                const x = (t - tStart) * pixelsPerRad;
+                if (x >= 0 && x <= width) {
+                    ctx.beginPath();
+                    ctx.moveTo(x, 0);
+                    ctx.lineTo(x, height);
+                    ctx.stroke();
+                }
+            }
+
+            // Draw zero crossings for cosine (where cos(ωt+φ) = 0)
+            ctx.strokeStyle = 'rgba(244, 67, 54, 0.3)'; // Light red, 30% opacity
+            ctx.setLineDash([4, 6]);
+
+            // Cosine zero crossings: ωt+φ = π/2 + nπ => t = (π/2 + nπ - φ)/ω
+            for (let n = -2; n <= 6; n++) {
+                const t = (Math.PI/2 + n * Math.PI - phase) / frequency;
+                const x = (t - tStart) * pixelsPerRad;
+                if (x >= 0 && x <= width) {
+                    ctx.beginPath();
+                    ctx.moveTo(x, 0);
+                    ctx.lineTo(x, height);
+                    ctx.stroke();
+                }
+            }
+
+            ctx.setLineDash([]);
+
+            // Draw Sine wave
+            ctx.strokeStyle = '#2196F3';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+
+            for (let x = 0; x < width; x++) {
+                const t = tStart + (x / width) * tRange;
+                const y = centerY - amplitude * Math.sin(frequency * t + phase) * (height / 4);
+
+                if (x === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+            }
+
+            ctx.stroke();
+
+            // Draw Cosine wave
+            ctx.strokeStyle = '#F44336';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+
+            for (let x = 0; x < width; x++) {
+                const t = tStart + (x / width) * tRange;
+                const y = centerY - amplitude * Math.cos(frequency * t + phase) * (height / 4);
+
+                if (x === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+            }
+
+            ctx.stroke();
+
+            // Mark points at t=0
+            const t0X = (0 - tStart) * pixelsPerRad;
+            const sinAt0 = centerY - amplitude * Math.sin(phase) * (height / 4);
+            const cosAt0 = centerY - amplitude * Math.cos(phase) * (height / 4);
+
+            // Sine marker at t=0
+            ctx.fillStyle = '#2196F3';
+            ctx.beginPath();
+            ctx.arc(t0X, sinAt0, 6, 0, 2 * Math.PI);
+            ctx.fill();
+
+            // Cosine marker at t=0
+            ctx.fillStyle = '#F44336';
+            ctx.beginPath();
+            ctx.arc(t0X, cosAt0, 6, 0, 2 * Math.PI);
+            ctx.fill();
+
+            // Labels at t=0
+            ctx.font = 'bold 14px sans-serif';
+            ctx.textAlign = 'left';
+            ctx.fillStyle = '#2196F3';
+            ctx.fillText('sin', t0X + 10, sinAt0 - 10);
+            ctx.fillStyle = '#F44336';
+            ctx.fillText('cos', t0X + 10, cosAt0 - 10);
+        }
+
+        updateEquation();
+        draw();
+    </script>
+</body>
+</html>

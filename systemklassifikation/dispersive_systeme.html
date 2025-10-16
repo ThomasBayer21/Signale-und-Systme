@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dispersive Systeme</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 2em;
+            font-weight: 600;
+        }
+        .description {
+            text-align: center;
+            color: #555;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+        .container {
+            background: white;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .info-box {
+            background: #ecf0f1;
+            padding: 20px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            border-left: 4px solid #9b59b6;
+        }
+        .info-box h3 {
+            margin: 0 0 10px 0;
+            font-size: 1.1em;
+            color: #2c3e50;
+        }
+        .info-box p {
+            margin: 5px 0;
+            color: #555;
+            line-height: 1.5;
+        }
+        .equation {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 6px;
+            text-align: center;
+            font-family: 'Courier New', monospace;
+            font-size: 1.1em;
+            margin: 20px 0;
+            color: #2c3e50;
+            border: 1px solid #ddd;
+        }
+        .demo-section {
+            margin: 30px 0;
+        }
+        .signal-row {
+            display: flex;
+            align-items: center;
+            margin: 25px 0;
+            gap: 15px;
+            padding: 20px;
+            background: #fafafa;
+            border-radius: 6px;
+        }
+        .signal-box {
+            flex: 1;
+            text-align: center;
+        }
+        .signal-label {
+            font-weight: 500;
+            margin-bottom: 12px;
+            color: #555;
+            font-size: 15px;
+        }
+        canvas {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background: white;
+        }
+        .operator {
+            font-size: 24px;
+            font-weight: bold;
+            color: #7f8c8d;
+            min-width: 30px;
+            text-align: center;
+        }
+        .system-box {
+            background: #ecf0f1;
+            padding: 25px;
+            border-radius: 6px;
+            text-align: center;
+            font-weight: 500;
+            color: #2c3e50;
+            min-width: 150px;
+            border: 1px solid #bdc3c7;
+        }
+        .controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin: 25px 0;
+            padding: 25px;
+            background: #fafafa;
+            border-radius: 6px;
+            border: 1px solid #e0e0e0;
+        }
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .control-group label {
+            font-size: 14px;
+            color: #555;
+            font-weight: 500;
+        }
+        .value-display {
+            font-size: 1.2em;
+            color: #9b59b6;
+            font-weight: 600;
+        }
+        input[type="range"] {
+            width: 100%;
+            height: 4px;
+            border-radius: 2px;
+            background: #ddd;
+            outline: none;
+            -webkit-appearance: none;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #9b59b6;
+            cursor: pointer;
+        }
+        input[type="range"]::-moz-range-thumb {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #9b59b6;
+            cursor: pointer;
+            border: none;
+        }
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            margin: 20px 0;
+            padding: 15px;
+            background: #fafafa;
+            border-radius: 6px;
+            flex-wrap: wrap;
+            border: 1px solid #e0e0e0;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .legend-color {
+            width: 30px;
+            height: 3px;
+            border-radius: 2px;
+        }
+        .explanation {
+            background: #f0f8f0;
+            padding: 20px;
+            border-radius: 6px;
+            margin: 20px 0;
+            line-height: 1.6;
+            border: 1px solid #4caf50;
+        }
+        .explanation strong {
+            color: #2e7d32;
+        }
+        .components-section {
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 2px dashed #bdc3c7;
+        }
+        .components-title {
+            text-align: center;
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 25px;
+        }
+        .components-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+        }
+        .component-card {
+            background: #fafafa;
+            padding: 20px;
+            border-radius: 6px;
+            border: 2px solid transparent;
+        }
+        .component-card.freq1 {
+            border-color: #2196F3;
+        }
+        .component-card.freq2 {
+            border-color: #F44336;
+        }
+        .delay-info {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+            text-align: center;
+            font-weight: 600;
+            color: #555;
+            border: 1px solid #ddd;
+        }
+        .key-insight {
+            background: #f0f8f0;
+            padding: 20px;
+            border-radius: 6px;
+            margin: 20px 0;
+            border: 1px solid #4caf50;
+        }
+        .key-insight h4 {
+            color: #2e7d32;
+            margin: 0 0 10px 0;
+            font-weight: 500;
+        }
+        .key-insight ul {
+            margin: 10px 0;
+            padding-left: 25px;
+        }
+        .key-insight li {
+            margin: 8px 0;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <h1>Dispersive Systeme</h1>
+    <div class="description">Verschiedene Frequenzen werden unterschiedlich verzögert</div>
+
+    <div class="container">
+        <div class="info-box">
+            <h3>Anleitung</h3>
+            <p>Ein Impuls enthält mehrere Frequenzen. In dispersiven Systemen</p>
+            <p>reisen hohe Frequenzen langsamer als niedrige - der Impuls zerfließt</p>
+        </div>
+
+        <div class="equation">
+            τ(ω) ≠ const → Laufzeit τ hängt von Frequenz ω ab
+        </div>
+
+        <div class="explanation">
+            <strong>Was ist Dispersion?</strong><br>
+            Ein dispersives System verzögert verschiedene Frequenzkomponenten unterschiedlich stark.
+            Dies führt zur Verzerrung von Impulsen - das Signal zerfließt in der Zeit.
+            <br><br>
+            <strong>Beispiele:</strong> Glasfaserkabel, Atmosphäre, Wasserwellen, Prismen (Licht)
+        </div>
+
+        <div class="controls">
+            <div class="control-group">
+                <label>Dispersionsstärke: <span class="value-display" id="dispersion-value">0.5</span></label>
+                <input type="range" id="dispersion" min="0" max="1.5" step="0.1" value="0.5">
+                <small style="color: #7f8c8d; text-align: center;">Höhere Werte = stärkere Trennung</small>
+            </div>
+            <div class="control-group">
+                <label>Niedrige Frequenz f₁: <span class="value-display" id="freq1-value">1.0</span> Hz</label>
+                <input type="range" id="freq1" min="0.5" max="3" step="0.5" value="1">
+            </div>
+            <div class="control-group">
+                <label>Hohe Frequenz f₂: <span class="value-display" id="freq2-value">3.0</span> Hz</label>
+                <input type="range" id="freq2" min="2" max="5" step="0.5" value="3">
+            </div>
+        </div>
+
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-color" style="background: #2196F3;"></div>
+                <span>Niedrige Frequenz f₁ (schneller)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #F44336;"></div>
+                <span>Hohe Frequenz f₂ (langsamer)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #9C27B0;"></div>
+                <span>Gemischtes Signal</span>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <div class="signal-row">
+                <div class="signal-box">
+                    <div class="signal-label">Eingang x(t)<br><small>Impuls mit beiden Frequenzen</small></div>
+                    <canvas id="input" width="380" height="130"></canvas>
+                </div>
+                <div class="operator">→</div>
+                <div class="system-box">
+                    Dispersives System
+                    <small style="display:block; margin-top:5px; color:#7f8c8d;">τ(ω) variabel</small>
+                </div>
+                <div class="operator">→</div>
+                <div class="signal-box">
+                    <div class="signal-label">Ausgang y(t)<br><small>Impuls zerfließt</small></div>
+                    <canvas id="output" width="380" height="130"></canvas>
+                </div>
+            </div>
+
+            <div class="components-section">
+                <div class="components-title">Aufspaltung in Frequenzkomponenten</div>
+                <div class="components-grid">
+                    <div class="component-card freq1">
+                        <div class="signal-label">Niedrige Frequenz f₁</div>
+                        <div class="delay-info">Verzögerung: <span id="delay1-display">gering</span></div>
+                        <canvas id="component1" width="380" height="110"></canvas>
+                        <div style="text-align: center; margin-top: 10px; color: #7f8c8d; font-size: 13px;">
+                            Kommt früher an
+                        </div>
+                    </div>
+                    <div class="component-card freq2">
+                        <div class="signal-label">Hohe Frequenz f₂</div>
+                        <div class="delay-info">Verzögerung: <span id="delay2-display">stark</span></div>
+                        <canvas id="component2" width="380" height="110"></canvas>
+                        <div style="text-align: center; margin-top: 10px; color: #7f8c8d; font-size: 13px;">
+                            Kommt später an
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="key-insight">
+            <h4>Kernaussagen</h4>
+            <ul>
+                <li>Dispersive Systeme haben eine frequenzabhängige Laufzeit τ(ω)</li>
+                <li>Verschiedene Frequenzen werden unterschiedlich stark verzögert</li>
+                <li>Ein scharfer Impuls wird dadurch in der Zeit verschmiert</li>
+                <li>Problem bei Datenübertragung: Impulse überlappen → Intersymbol-Interferenz</li>
+                <li>In nicht-dispersiven Systemen: τ(ω) = const → keine Verzerrung</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        const canvases = {
+            input: document.getElementById('input'),
+            output: document.getElementById('output'),
+            component1: document.getElementById('component1'),
+            component2: document.getElementById('component2')
+        };
+
+        const contexts = {};
+        for (let key in canvases) {
+            contexts[key] = canvases[key].getContext('2d');
+        }
+
+        let dispersion = 0.5;
+        let freq1 = 1.0;
+        let freq2 = 3.0;
+
+        document.getElementById('dispersion').addEventListener('input', (e) => {
+            dispersion = parseFloat(e.target.value);
+            document.getElementById('dispersion-value').textContent = dispersion.toFixed(1);
+            updateDelayDisplays();
+            draw();
+        });
+
+        document.getElementById('freq1').addEventListener('input', (e) => {
+            freq1 = parseFloat(e.target.value);
+            document.getElementById('freq1-value').textContent = freq1.toFixed(1);
+            draw();
+        });
+
+        document.getElementById('freq2').addEventListener('input', (e) => {
+            freq2 = parseFloat(e.target.value);
+            document.getElementById('freq2-value').textContent = freq2.toFixed(1);
+            draw();
+        });
+
+        function updateDelayDisplays() {
+            const delay1 = (0.3 * dispersion).toFixed(2);
+            const delay2 = (1.8 * dispersion).toFixed(2);
+            document.getElementById('delay1-display').textContent = `${delay1}s`;
+            document.getElementById('delay2-display').textContent = `${delay2}s`;
+        }
+
+        function drawGrid(ctx) {
+            const width = ctx.canvas.width;
+            const height = ctx.canvas.height;
+
+            ctx.strokeStyle = '#f0f0f0';
+            ctx.lineWidth = 1;
+
+            // Horizontal center line
+            ctx.beginPath();
+            ctx.moveTo(0, height/2);
+            ctx.lineTo(width, height/2);
+            ctx.stroke();
+
+            // Vertical grid lines
+            for (let i = 0; i <= 8; i++) {
+                const x = (i / 8) * width;
+                ctx.beginPath();
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x, height);
+                ctx.stroke();
+            }
+
+            // Time labels
+            ctx.fillStyle = '#999';
+            ctx.font = '10px sans-serif';
+            ctx.textAlign = 'center';
+            for (let i = 0; i <= 8; i += 2) {
+                const x = (i / 8) * width;
+                ctx.fillText(`${i}s`, x, height - 5);
+            }
+        }
+
+        function drawSignal(ctx, signalFunc, color = '#2196F3', lineWidth = 2.5) {
+            const width = ctx.canvas.width;
+            const height = ctx.canvas.height;
+
+            ctx.clearRect(0, 0, width, height);
+            drawGrid(ctx);
+
+            ctx.strokeStyle = color;
+            ctx.lineWidth = lineWidth;
+            ctx.beginPath();
+
+            for (let x = 0; x < width; x++) {
+                const t = (x / width) * 8;
+                const val = signalFunc(t);
+                const y = height/2 - (val * (height/2 * 0.8));
+
+                if (x === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+            }
+
+            ctx.stroke();
+        }
+
+        function inputSignal(t) {
+            // Gaussian envelope containing both frequencies
+            const center = 3;
+            const width = 0.8;
+            const envelope = Math.exp(-Math.pow((t - center) / width, 2));
+            // Superposition of both frequency components
+            const lowFreq = Math.sin(2 * Math.PI * freq1 * (t - center));
+            const highFreq = Math.sin(2 * Math.PI * freq2 * (t - center));
+            return envelope * (lowFreq + highFreq) / 2;
+        }
+
+        function lowFreqOutput(t) {
+            // Low frequency: minimal delay, minimal broadening
+            const delay = 0.3 * dispersion;
+            const center = 3 + delay;
+            const width = 0.8 + 0.15 * dispersion;
+            const envelope = Math.exp(-Math.pow((t - center) / width, 2));
+            return envelope * Math.sin(2 * Math.PI * freq1 * (t - center));
+        }
+
+        function highFreqOutput(t) {
+            // High frequency: strong delay, strong broadening
+            const delay = 1.8 * dispersion;
+            const center = 3 + delay;
+            const width = 0.8 + 0.9 * dispersion;
+            const envelope = Math.exp(-Math.pow((t - center) / width, 2));
+            return envelope * Math.sin(2 * Math.PI * freq2 * (t - center));
+        }
+
+        function outputSignal(t) {
+            // Combined output with dispersion
+            return (lowFreqOutput(t) + highFreqOutput(t)) / 2;
+        }
+
+        function draw() {
+            // Input signal
+            drawSignal(contexts.input, inputSignal, '#9C27B0', 2.5);
+
+            // Output signal (dispersed)
+            drawSignal(contexts.output, outputSignal, '#9C27B0', 2.5);
+
+            // Individual frequency components
+            drawSignal(contexts.component1, lowFreqOutput, '#2196F3', 2.5);
+            drawSignal(contexts.component2, highFreqOutput, '#F44336', 2.5);
+        }
+
+        updateDelayDisplays();
+        draw();
+    </script>
+</body>
+</html>

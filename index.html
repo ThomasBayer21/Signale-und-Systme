@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signale und Systeme - Visualisierungen</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 2.2em;
+            font-weight: 600;
+        }
+        .subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            margin-bottom: 40px;
+            font-size: 1.1em;
+        }
+        .container {
+            background: white;
+            border-radius: 8px;
+            padding: 40px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .intro {
+            background: #ecf0f1;
+            padding: 20px;
+            border-radius: 6px;
+            margin-bottom: 35px;
+            border-left: 4px solid #3498db;
+            line-height: 1.6;
+            color: #555;
+        }
+        .visualizations {
+            display: grid;
+            gap: 20px;
+        }
+        .viz-card {
+            background: #fafafa;
+            padding: 25px;
+            border-radius: 6px;
+            border-left: 4px solid #3498db;
+            transition: transform 0.2s, box-shadow 0.2s;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+        .viz-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+        }
+        .viz-card.systems {
+            border-left-color: #667eea;
+        }
+        .viz-card.elementary {
+            border-left-color: #f093fb;
+        }
+        .viz-card.decibel {
+            border-left-color: #e74c3c;
+        }
+        .viz-title {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        .viz-subtitle {
+            font-size: 0.95em;
+            color: #7f8c8d;
+            margin-bottom: 12px;
+            font-style: italic;
+        }
+        .viz-description {
+            color: #555;
+            line-height: 1.6;
+            font-size: 0.95em;
+        }
+        .viz-count {
+            margin-top: 12px;
+            font-size: 0.9em;
+            color: #7f8c8d;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <h1>Signale und Systeme</h1>
+    <div class="subtitle">Interaktive Visualisierungen zur Signalverarbeitung</div>
+
+    <div class="container">
+        <div class="intro">
+            Diese Sammlung bietet interaktive Visualisierungen zu den
+            fundamentalen Konzepten der Signalverarbeitung und Systemtheorie. Alle Darstellungen
+            sind direkt im Browser nutzbar und ermöglichen durch Parameteränderungen ein
+            tieferes Verständnis der mathematischen Zusammenhänge.
+        </div>
+
+        <div class="visualizations">
+            <a href="systemklassifikation/index.html" class="viz-card systems">
+                <div class="viz-title">Systemklassifikation</div>
+                <div class="viz-subtitle">Eigenschaften und Verhalten von Systemen</div>
+                <div class="viz-description">
+                    Erforsche die fundamentalen Eigenschaften linearer und zeitinvarianter Systeme.
+                    Verstehe das Überlagerungsprinzip, die Zeitinvarianz, Kausalität und
+                    dispersive Effekte durch interaktive Demonstrationen.
+                </div>
+                <div class="viz-count">4 Visualisierungen</div>
+            </a>
+
+            <a href="elementarfunktionen/index.html" class="viz-card elementary">
+                <div class="viz-title">Elementarfunktionen</div>
+                <div class="viz-subtitle">Bausteine der Signalverarbeitung</div>
+                <div class="viz-description">
+                    Lerne die grundlegenden Signale kennen: Sprungfunktion, Rechteck, Dreieck,
+                    Sinc, Dirac-Impuls, Exponentialfunktion, cosinusförmige Signale und komplexe Drehzeiger.
+                    Diese Funktionen sind die Basis für die Analyse und Synthese komplexer Signale.
+                </div>
+                <div class="viz-count">8 Visualisierungen</div>
+            </a>
+
+            <a href="dezibel/index.html" class="viz-card decibel">
+                <div class="viz-title">Dezibel und Logarithmische Skalen</div>
+                <div class="viz-subtitle">Logarithmische Darstellung</div>
+                <div class="viz-description">
+                    Verstehe die Dezibel-Skala und ihre Bedeutung in der Signalverarbeitung.
+                    Umfasst interaktiven Umrechner, Visualisierungen des Amplitude-Leistung-Zusammenhangs,
+                    logarithmische Eigenschaften und Rechenregeln für die praktische Anwendung.
+                </div>
+                <div class="viz-count">4 Visualisierungen</div>
+            </a>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dirac-Impuls</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 2em;
+            font-weight: 600;
+        }
+        .description {
+            text-align: center;
+            color: #555;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+        .container {
+            background: white;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .info-box {
+            background: #ecf0f1;
+            padding: 20px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            border-left: 4px solid #e74c3c;
+        }
+        .info-box h3 {
+            margin: 0 0 10px 0;
+            font-size: 1.1em;
+            color: #2c3e50;
+        }
+        .info-box p {
+            margin: 5px 0;
+            color: #555;
+            line-height: 1.5;
+        }
+        .equation {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 6px;
+            text-align: center;
+            font-family: 'Courier New', monospace;
+            font-size: 1.2em;
+            margin: 20px 0;
+            color: #2c3e50;
+            border: 1px solid #ddd;
+        }
+        .controls {
+            display: flex;
+            gap: 25px;
+            justify-content: center;
+            margin: 25px 0;
+            flex-wrap: wrap;
+            padding: 20px;
+            background: #fafafa;
+            border-radius: 6px;
+            border: 1px solid #e0e0e0;
+        }
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            min-width: 250px;
+        }
+        .control-group label {
+            font-size: 14px;
+            color: #555;
+            font-weight: 500;
+            text-align: center;
+        }
+        .value-display {
+            font-size: 1.1em;
+            color: #e74c3c;
+            font-weight: 600;
+        }
+        input[type="range"] {
+            width: 100%;
+            height: 4px;
+            border-radius: 2px;
+            background: #ddd;
+            outline: none;
+            -webkit-appearance: none;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #e74c3c;
+            cursor: pointer;
+        }
+        input[type="range"]::-moz-range-thumb {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #e74c3c;
+            cursor: pointer;
+            border: none;
+        }
+        canvas {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background: white;
+            display: block;
+            margin: 20px auto;
+        }
+        .properties {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 6px;
+            margin-top: 25px;
+            border: 1px solid #ddd;
+        }
+        .properties h3 {
+            color: #2c3e50;
+            margin: 0 0 15px 0;
+            font-size: 1.1em;
+        }
+        .properties ul {
+            margin: 0;
+            padding-left: 25px;
+        }
+        .properties li {
+            color: #555;
+            line-height: 1.8;
+            margin: 8px 0;
+        }
+        .properties strong {
+            color: #2c3e50;
+        }
+        .approximation-info {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 20px 0;
+            border-left: 4px solid #ff9800;
+        }
+        .approximation-info p {
+            margin: 5px 0;
+            color: #555;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <h1>Dirac-Impuls</h1>
+    <div class="description">δ(t) - Dirac Delta Distribution</div>
+
+    <div class="container">
+        <div class="info-box">
+            <h3>Beschreibung</h3>
+            <p>Der Dirac-Impuls ist keine Funktion im klassischen Sinne, sondern eine Distribution.</p>
+            <p>Er wird als Grenzwert von immer schmaleren und höheren Impulsen mit konstanter Fläche 1 definiert.</p>
+        </div>
+
+        <div class="equation">
+            δ(t) = lim[ε→0] (1/ε)·rect(t/ε)  mit  ∫δ(t)dt = 1
+        </div>
+
+        <div class="approximation-info">
+            <p><strong>Approximation:</strong> Die Visualisierung zeigt eine Gaußfunktion als Näherung für den Dirac-Impuls.</p>
+            <p>Bei σ → 0 wird die Gaußfunktion immer schmaler und höher, nähert sich aber dem idealen δ(t) an.</p>
+        </div>
+
+        <div class="controls">
+            <div class="control-group">
+                <label>Pulsbreite σ (Standardabweichung): <span class="value-display" id="width-value">0.5</span></label>
+                <input type="range" id="width" min="0.05" max="1.5" step="0.01" value="0.5">
+            </div>
+            <div class="control-group">
+                <label>Position t₀: <span class="value-display" id="shift-value">0.0</span> s</label>
+                <input type="range" id="shift" min="-3" max="3" step="0.1" value="0">
+            </div>
+        </div>
+
+        <canvas id="canvas" width="800" height="400"></canvas>
+
+        <div class="properties">
+            <h3>Eigenschaften des Dirac-Impulses</h3>
+            <ul>
+                <li><strong>Ausblendeigenschaft:</strong> ∫f(t)·δ(t-t₀)dt = f(t₀) (Siebeigenschaft)</li>
+                <li><strong>Ableitung der Sprungfunktion:</strong> δ(t) = d/dt[u(t)]</li>
+                <li><strong>Fläche:</strong> ∫δ(t)dt = 1 (normiert)</li>
+                <li><strong>Symmetrie:</strong> Gerade Distribution (δ(-t) = δ(t))</li>
+                <li><strong>Fourier-Transformation:</strong> F{δ(t)} = 1 (konstantes Spektrum)</li>
+                <li><strong>Skalierung:</strong> δ(at) = δ(t)/|a|</li>
+                <li><strong>Anwendung:</strong> Impulsantwort, Abtastung, ideale Anregung von Systemen</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+
+        let sigma = 0.5;
+        let shift = 0;
+
+        document.getElementById('width').addEventListener('input', (e) => {
+            sigma = parseFloat(e.target.value);
+            document.getElementById('width-value').textContent = sigma.toFixed(2);
+            draw();
+        });
+
+        document.getElementById('shift').addEventListener('input', (e) => {
+            shift = parseFloat(e.target.value);
+            document.getElementById('shift-value').textContent = shift.toFixed(1);
+            draw();
+        });
+
+        function diracApproximation(t, t0, sig) {
+            // Gaussian approximation of Dirac delta
+            // Normalized so that integral = 1
+            const coefficient = 1 / (sig * Math.sqrt(2 * Math.PI));
+            const exponent = -Math.pow(t - t0, 2) / (2 * sig * sig);
+            return coefficient * Math.exp(exponent);
+        }
+
+        function draw() {
+            const width = canvas.width;
+            const height = canvas.height;
+            const centerY = height * 0.7; // Lower center for tall pulses
+            const timeRange = 6;
+
+            ctx.clearRect(0, 0, width, height);
+
+            // Grid
+            ctx.strokeStyle = '#f0f0f0';
+            ctx.lineWidth = 1;
+
+            for (let i = 0; i <= 5; i++) {
+                const y = (i / 5) * height;
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(width, y);
+                ctx.stroke();
+            }
+
+            for (let i = 0; i <= 10; i++) {
+                const x = (i / 10) * width;
+                ctx.beginPath();
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x, height);
+                ctx.stroke();
+            }
+
+            // Axes
+            ctx.strokeStyle = '#333';
+            ctx.lineWidth = 2;
+
+            ctx.beginPath();
+            ctx.moveTo(0, centerY);
+            ctx.lineTo(width, centerY);
+            ctx.stroke();
+
+            const zeroX = width / 2;
+            ctx.beginPath();
+            ctx.moveTo(zeroX, 0);
+            ctx.lineTo(zeroX, height);
+            ctx.stroke();
+
+            // Labels
+            ctx.fillStyle = '#666';
+            ctx.font = '12px sans-serif';
+            ctx.textAlign = 'center';
+            for (let t = -3; t <= 3; t += 1) {
+                const x = ((t + 3) / timeRange) * width;
+                ctx.fillText(`${t}`, x, centerY + 20);
+            }
+
+            // Find max value for scaling
+            const maxVal = diracApproximation(shift, shift, sigma);
+
+            // Draw approximation
+            ctx.strokeStyle = '#e74c3c';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+
+            for (let x = 0; x <= width; x++) {
+                const t = ((x / width) * timeRange) - 3;
+                const val = diracApproximation(t, shift, sigma);
+                // Scale to fit in view
+                const scaleFactor = Math.min(1, 5 / maxVal);
+                const y = centerY - (val * scaleFactor * (centerY * 0.85));
+
+                if (x === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+            }
+
+            ctx.stroke();
+
+            // Fill under curve
+            ctx.fillStyle = 'rgba(231, 76, 60, 0.1)';
+            ctx.lineTo(width, centerY);
+            ctx.lineTo(0, centerY);
+            ctx.closePath();
+            ctx.fill();
+
+            // Mark peak position
+            const peakX = ((shift + 3) / timeRange) * width;
+            const peakVal = diracApproximation(shift, shift, sigma);
+            const scaleFactor = Math.min(1, 5 / maxVal);
+            const peakY = centerY - (peakVal * scaleFactor * (centerY * 0.85));
+
+            // Vertical line at peak
+            ctx.strokeStyle = '#e74c3c';
+            ctx.lineWidth = 2;
+            ctx.setLineDash([5, 5]);
+            ctx.beginPath();
+            ctx.moveTo(peakX, peakY);
+            ctx.lineTo(peakX, centerY);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            // Peak marker
+            ctx.fillStyle = '#e74c3c';
+            ctx.beginPath();
+            ctx.arc(peakX, peakY, 5, 0, 2 * Math.PI);
+            ctx.fill();
+
+            // Peak height label
+            ctx.fillStyle = '#e74c3c';
+            ctx.font = 'bold 14px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText(`h = ${maxVal.toFixed(2)}`, peakX, peakY - 15);
+
+            // Width indicator (at 60% of peak height)
+            const targetHeight = 0.6065 * peakVal; // At ±σ from center
+            const widthLeft = shift - sigma;
+            const widthRight = shift + sigma;
+
+            const leftX = ((widthLeft + 3) / timeRange) * width;
+            const rightX = ((widthRight + 3) / timeRange) * width;
+            const widthY = centerY - (targetHeight * scaleFactor * (centerY * 0.85));
+
+            if (leftX >= 0 && rightX <= width) {
+                ctx.strokeStyle = '#ff9800';
+                ctx.fillStyle = '#ff9800';
+                ctx.lineWidth = 2;
+
+                // Horizontal line
+                ctx.beginPath();
+                ctx.moveTo(leftX, widthY);
+                ctx.lineTo(rightX, widthY);
+                ctx.stroke();
+
+                // Markers
+                ctx.beginPath();
+                ctx.arc(leftX, widthY, 3, 0, 2 * Math.PI);
+                ctx.fill();
+                ctx.beginPath();
+                ctx.arc(rightX, widthY, 3, 0, 2 * Math.PI);
+                ctx.fill();
+
+                // Label
+                ctx.font = 'bold 12px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText(`2σ = ${(2 * sigma).toFixed(2)}`, (leftX + rightX) / 2, widthY - 10);
+            }
+
+            // Area indicator
+            ctx.fillStyle = '#2ecc71';
+            ctx.font = 'bold 16px sans-serif';
+            ctx.textAlign = 'left';
+            ctx.fillText('Fläche ≈ 1.0', 20, 30);
+
+            // Show limiting behavior
+            ctx.fillStyle = '#555';
+            ctx.font = '14px sans-serif';
+            if (sigma < 0.15) {
+                ctx.fillText('σ → 0: Nähert sich idealem δ(t) an', 20, 55);
+            } else if (sigma > 1.0) {
+                ctx.fillText('σ groß: Breiter Puls, weit von δ(t) entfernt', 20, 55);
+            }
+        }
+
+        draw();
+    </script>
+</body>
+</html>

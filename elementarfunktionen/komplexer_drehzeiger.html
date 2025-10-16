@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Komplexer Drehzeiger</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 2em;
+            font-weight: 600;
+        }
+        .description {
+            text-align: center;
+            color: #555;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+        .container {
+            background: white;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .info-box {
+            background: #ecf0f1;
+            padding: 20px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            border-left: 4px solid #9b59b6;
+        }
+        .info-box h3 {
+            margin: 0 0 10px 0;
+            font-size: 1.1em;
+            color: #2c3e50;
+        }
+        .info-box p {
+            margin: 5px 0;
+            color: #555;
+            line-height: 1.5;
+        }
+        .equation {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 6px;
+            text-align: center;
+            font-family: 'Courier New', monospace;
+            font-size: 1.2em;
+            margin: 20px 0;
+            color: #2c3e50;
+            border: 1px solid #ddd;
+        }
+        .controls {
+            display: flex;
+            gap: 25px;
+            justify-content: center;
+            align-items: center;
+            margin: 25px 0;
+            padding: 25px;
+            background: #fafafa;
+            border-radius: 6px;
+            border: 1px solid #e0e0e0;
+            flex-wrap: wrap;
+        }
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            min-width: 180px;
+        }
+        .control-group label {
+            font-size: 14px;
+            color: #555;
+            font-weight: 500;
+        }
+        .value-display {
+            font-size: 1.1em;
+            color: #9b59b6;
+            font-weight: 600;
+        }
+        input[type="range"] {
+            width: 100%;
+            height: 4px;
+            border-radius: 2px;
+            background: #ddd;
+            outline: none;
+            -webkit-appearance: none;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #9b59b6;
+            cursor: pointer;
+        }
+        input[type="range"]::-moz-range-thumb {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #9b59b6;
+            cursor: pointer;
+            border: none;
+        }
+        .play-button {
+            background: #9b59b6;
+            color: white;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+        }
+        .play-button:hover {
+            background: #8e44ad;
+        }
+        .canvas-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 30px 0;
+        }
+        .canvas-container {
+            text-align: center;
+        }
+        .canvas-label {
+            font-weight: 500;
+            margin-bottom: 10px;
+            color: #555;
+            font-size: 15px;
+        }
+        canvas {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background: white;
+            max-width: 100%;
+        }
+        .legend {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin: 20px 0;
+            padding: 15px;
+            background: #fafafa;
+            border-radius: 6px;
+            border: 1px solid #e0e0e0;
+            flex-wrap: wrap;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .legend-color {
+            width: 30px;
+            height: 3px;
+            border-radius: 2px;
+        }
+        .euler-info {
+            background: #f4f0f8;
+            padding: 20px;
+            border-radius: 6px;
+            text-align: center;
+            margin: 20px 0;
+            border: 1px solid #9b59b6;
+        }
+        .euler-info h4 {
+            color: #8e44ad;
+            margin: 0 0 10px 0;
+            font-weight: 500;
+        }
+        .euler-info p {
+            margin: 5px 0;
+            color: #555;
+            line-height: 1.6;
+        }
+        .back-link {
+            text-align: center;
+            margin-top: 30px;
+        }
+        .back-link a {
+            color: #3498db;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .back-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <h1>Komplexer Drehzeiger</h1>
+    <div class="description">e^(jωt) = cos(ωt) + j·sin(ωt) - Euler'sche Formel visualisiert</div>
+
+    <div class="container">
+        <div class="info-box">
+            <h3>Anleitung</h3>
+            <p>Starte die Animation und beobachte die Rotation des Zeigers in der komplexen Ebene</p>
+            <p>Die Projektionen zeigen Real-Teil (Cosinus), Imaginär-Teil (Sinus) und Tangens</p>
+        </div>
+
+        <div class="equation">
+            e^(jωt) = cos(ωt) + j·sin(ωt)
+        </div>
+
+        <div class="controls">
+            <button class="play-button" id="play-btn">Animation starten</button>
+            <div class="control-group">
+                <label>Winkelgeschwindigkeit ω: <span class="value-display" id="omega-value">1.0</span> rad/s</label>
+                <input type="range" id="omega" min="0.5" max="3" step="0.5" value="1">
+            </div>
+            <div class="control-group">
+                <label>Amplitude: <span class="value-display" id="amp-value">1.0</span></label>
+                <input type="range" id="amplitude" min="0.5" max="1.5" step="0.1" value="1">
+            </div>
+        </div>
+
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-color" style="background: #9b59b6;"></div>
+                <span>Drehzeiger e^(jωt)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #F44336;"></div>
+                <span>Cosinus (Realteil)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #2196F3;"></div>
+                <span>Sinus (Imaginärteil)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #4CAF50;"></div>
+                <span>Tangens</span>
+            </div>
+        </div>
+
+        <div class="canvas-row">
+            <div class="canvas-container">
+                <div class="canvas-label">Komplexe Ebene (Einheitskreis)</div>
+                <canvas id="circle-canvas" width="400" height="400"></canvas>
+            </div>
+            <div class="canvas-container">
+                <div class="canvas-label">Zeitverläufe der Projektionen</div>
+                <canvas id="time-canvas" width="500" height="400"></canvas>
+            </div>
+        </div>
+
+        <div class="euler-info">
+            <h4>Euler'sche Formel</h4>
+            <p>Der Zeiger rotiert mit konstanter Winkelgeschwindigkeit ω in der komplexen Ebene</p>
+            <p>Realteil (Projektion auf Re-Achse): cos(ωt)</p>
+            <p>Imaginärteil (Projektion auf Im-Achse): sin(ωt)</p>
+            <p>Tangens: tan(ωt) = sin(ωt)/cos(ωt) - Steigung des Zeigers</p>
+        </div>
+
+        <div class="back-link">
+            <a href="index.html">← Zurück zur Übersicht</a>
+        </div>
+    </div>
+
+    <script>
+        const circleCanvas = document.getElementById('circle-canvas');
+        const timeCanvas = document.getElementById('time-canvas');
+        const circleCtx = circleCanvas.getContext('2d');
+        const timeCtx = timeCanvas.getContext('2d');
+
+        let omega = 1.0;
+        let amplitude = 1.0;
+        let time = 0;
+        let isAnimating = false;
+        let animationId = null;
+        let history = [];
+        const maxHistory = 200;
+
+        document.getElementById('omega').addEventListener('input', (e) => {
+            omega = parseFloat(e.target.value);
+            document.getElementById('omega-value').textContent = omega.toFixed(1);
+        });
+
+        document.getElementById('amplitude').addEventListener('input', (e) => {
+            amplitude = parseFloat(e.target.value);
+            document.getElementById('amp-value').textContent = amplitude.toFixed(1);
+        });
+
+        document.getElementById('play-btn').addEventListener('click', () => {
+            isAnimating = !isAnimating;
+            const btn = document.getElementById('play-btn');
+            if (isAnimating) {
+                btn.textContent = 'Animation stoppen';
+                animate();
+            } else {
+                btn.textContent = 'Animation starten';
+                if (animationId) cancelAnimationFrame(animationId);
+            }
+        });
+
+        function drawCircle() {
+            const width = circleCanvas.width;
+            const height = circleCanvas.height;
+            const centerX = width / 2;
+            const centerY = height / 2;
+            const radius = amplitude * (Math.min(width, height) / 2 - 40);
+
+            circleCtx.clearRect(0, 0, width, height);
+
+            // Grid
+            circleCtx.strokeStyle = '#f0f0f0';
+            circleCtx.lineWidth = 1;
+            for (let i = -1; i <= 1; i += 0.5) {
+                if (i === 0) continue;
+                const x = centerX + i * radius;
+                const y = centerY + i * radius;
+                // Vertical lines
+                circleCtx.beginPath();
+                circleCtx.moveTo(x, 0);
+                circleCtx.lineTo(x, height);
+                circleCtx.stroke();
+                // Horizontal lines
+                circleCtx.beginPath();
+                circleCtx.moveTo(0, y);
+                circleCtx.lineTo(width, y);
+                circleCtx.stroke();
+            }
+
+            // Axes
+            circleCtx.strokeStyle = '#999';
+            circleCtx.lineWidth = 2;
+            // Real axis (horizontal)
+            circleCtx.beginPath();
+            circleCtx.moveTo(0, centerY);
+            circleCtx.lineTo(width, centerY);
+            circleCtx.stroke();
+            // Imaginary axis (vertical)
+            circleCtx.beginPath();
+            circleCtx.moveTo(centerX, 0);
+            circleCtx.lineTo(centerX, height);
+            circleCtx.stroke();
+
+            // Axis labels
+            circleCtx.fillStyle = '#666';
+            circleCtx.font = 'bold 14px sans-serif';
+            circleCtx.textAlign = 'center';
+            circleCtx.fillText('Re', width - 20, centerY - 10);
+            circleCtx.fillText('Im', centerX + 15, 20);
+
+            // Unit circle
+            circleCtx.strokeStyle = '#ddd';
+            circleCtx.lineWidth = 2;
+            circleCtx.beginPath();
+            circleCtx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+            circleCtx.stroke();
+
+            // Current angle
+            const angle = omega * time;
+            const x = amplitude * Math.cos(angle);
+            const y = amplitude * Math.sin(angle);
+            const pixelX = centerX + x * (radius / amplitude);
+            const pixelY = centerY - y * (radius / amplitude);
+
+            // Projection lines
+            // Cosine (to real axis)
+            circleCtx.strokeStyle = '#F44336';
+            circleCtx.lineWidth = 1;
+            circleCtx.setLineDash([4, 4]);
+            circleCtx.beginPath();
+            circleCtx.moveTo(pixelX, pixelY);
+            circleCtx.lineTo(pixelX, centerY);
+            circleCtx.stroke();
+
+            // Sine (to imaginary axis)
+            circleCtx.strokeStyle = '#2196F3';
+            circleCtx.beginPath();
+            circleCtx.moveTo(pixelX, pixelY);
+            circleCtx.lineTo(centerX, pixelY);
+            circleCtx.stroke();
+            circleCtx.setLineDash([]);
+
+            // Rotating vector
+            circleCtx.strokeStyle = '#9b59b6';
+            circleCtx.lineWidth = 3;
+            circleCtx.beginPath();
+            circleCtx.moveTo(centerX, centerY);
+            circleCtx.lineTo(pixelX, pixelY);
+            circleCtx.stroke();
+
+            // Arrowhead
+            const arrowLength = 15;
+            const arrowAngle = Math.PI / 6;
+            circleCtx.beginPath();
+            circleCtx.moveTo(pixelX, pixelY);
+            circleCtx.lineTo(
+                pixelX - arrowLength * Math.cos(angle - arrowAngle),
+                pixelY + arrowLength * Math.sin(angle - arrowAngle)
+            );
+            circleCtx.moveTo(pixelX, pixelY);
+            circleCtx.lineTo(
+                pixelX - arrowLength * Math.cos(angle + arrowAngle),
+                pixelY + arrowLength * Math.sin(angle + arrowAngle)
+            );
+            circleCtx.stroke();
+
+            // Point at end
+            circleCtx.fillStyle = '#9b59b6';
+            circleCtx.beginPath();
+            circleCtx.arc(pixelX, pixelY, 6, 0, 2 * Math.PI);
+            circleCtx.fill();
+
+            // Cosine projection point
+            circleCtx.fillStyle = '#F44336';
+            circleCtx.beginPath();
+            circleCtx.arc(pixelX, centerY, 5, 0, 2 * Math.PI);
+            circleCtx.fill();
+
+            // Sine projection point
+            circleCtx.fillStyle = '#2196F3';
+            circleCtx.beginPath();
+            circleCtx.arc(centerX, pixelY, 5, 0, 2 * Math.PI);
+            circleCtx.fill();
+
+            // Tangent line (always draw, showing infinity tendency)
+            if (Math.abs(Math.cos(angle)) > 0.02) {
+                const tanValue = Math.tan(angle);
+                const tanY = centerY - tanValue * radius;
+
+                // Draw line even if it extends beyond canvas
+                const clampedTanY = Math.max(-height, Math.min(2 * height, tanY));
+
+                circleCtx.strokeStyle = '#4CAF50';
+                circleCtx.lineWidth = 2;
+                circleCtx.setLineDash([2, 3]);
+                circleCtx.beginPath();
+                circleCtx.moveTo(centerX, centerY);
+                circleCtx.lineTo(centerX + radius, clampedTanY);
+                circleCtx.stroke();
+                circleCtx.setLineDash([]);
+
+                // Tangent point (only if visible)
+                if (tanY > 0 && tanY < height) {
+                    circleCtx.fillStyle = '#4CAF50';
+                    circleCtx.beginPath();
+                    circleCtx.arc(centerX + radius, tanY, 5, 0, 2 * Math.PI);
+                    circleCtx.fill();
+                }
+            }
+
+            // Amplitude/Radius label
+            const labelAngle = Math.PI / 4; // 45 degrees
+            const labelRadius = radius / 2;
+            const labelX = centerX + labelRadius * Math.cos(labelAngle);
+            const labelY = centerY - labelRadius * Math.sin(labelAngle);
+
+            circleCtx.fillStyle = '#666';
+            circleCtx.font = 'bold 13px sans-serif';
+            circleCtx.textAlign = 'center';
+            circleCtx.fillText(`A = ${amplitude.toFixed(1)}`, labelX, labelY);
+
+            // Angle arc
+            circleCtx.strokeStyle = '#666';
+            circleCtx.lineWidth = 1;
+            circleCtx.beginPath();
+            circleCtx.arc(centerX, centerY, 30, 0, -angle, true);
+            circleCtx.stroke();
+
+            // Angle label
+            circleCtx.fillStyle = '#666';
+            circleCtx.font = '12px sans-serif';
+            circleCtx.fillText(`ωt = ${angle.toFixed(2)}`, centerX + 40, centerY - 20);
+        }
+
+        function drawTimePlots() {
+            const width = timeCanvas.width;
+            const height = timeCanvas.height;
+            const plotHeight = height / 3;
+
+            timeCtx.clearRect(0, 0, width, height);
+
+            // Store current values
+            const angle = omega * time;
+            const cosValue = amplitude * Math.cos(angle);
+            const sinValue = amplitude * Math.sin(angle);
+            const tanValue = amplitude * Math.tan(angle);
+
+            history.push({ time, cosValue, sinValue, tanValue });
+            if (history.length > maxHistory) history.shift();
+
+            // Draw three plots
+            const plots = [
+                { color: '#F44336', data: 'cosValue', label: 'cos(ωt)', limit: amplitude * 1.2, showAmplitude: true },
+                { color: '#2196F3', data: 'sinValue', label: 'sin(ωt)', limit: amplitude * 1.2, showAmplitude: true },
+                { color: '#4CAF50', data: 'tanValue', label: 'tan(ωt)', limit: 30, showAmplitude: false }
+            ];
+
+            plots.forEach((plot, idx) => {
+                const offsetY = idx * plotHeight;
+                const centerY = offsetY + plotHeight / 2;
+
+                // Grid
+                timeCtx.strokeStyle = '#f0f0f0';
+                timeCtx.lineWidth = 1;
+                timeCtx.beginPath();
+                timeCtx.moveTo(0, centerY);
+                timeCtx.lineTo(width, centerY);
+                timeCtx.stroke();
+
+                // Vertical grid lines
+                for (let i = 1; i <= 4; i++) {
+                    const x = (i / 4) * width;
+                    timeCtx.beginPath();
+                    timeCtx.moveTo(x, offsetY);
+                    timeCtx.lineTo(x, offsetY + plotHeight);
+                    timeCtx.stroke();
+                }
+
+                // Amplitude markers for sin/cos
+                if (plot.showAmplitude) {
+                    timeCtx.strokeStyle = plot.color;
+                    timeCtx.lineWidth = 1;
+                    timeCtx.setLineDash([3, 3]);
+
+                    // +A line
+                    const yPlus = centerY - (amplitude / plot.limit) * (plotHeight / 2) * 0.8;
+                    timeCtx.beginPath();
+                    timeCtx.moveTo(0, yPlus);
+                    timeCtx.lineTo(width, yPlus);
+                    timeCtx.stroke();
+
+                    // -A line
+                    const yMinus = centerY + (amplitude / plot.limit) * (plotHeight / 2) * 0.8;
+                    timeCtx.beginPath();
+                    timeCtx.moveTo(0, yMinus);
+                    timeCtx.lineTo(width, yMinus);
+                    timeCtx.stroke();
+
+                    timeCtx.setLineDash([]);
+
+                    // Labels
+                    timeCtx.fillStyle = plot.color;
+                    timeCtx.font = '11px sans-serif';
+                    timeCtx.textAlign = 'right';
+                    timeCtx.fillText(`+A`, width - 5, yPlus - 3);
+                    timeCtx.fillText(`-A`, width - 5, yMinus + 12);
+                }
+
+                // Label
+                timeCtx.fillStyle = plot.color;
+                timeCtx.font = 'bold 14px sans-serif';
+                timeCtx.textAlign = 'left';
+                timeCtx.fillText(plot.label, 10, offsetY + 20);
+
+                // Plot line
+                timeCtx.strokeStyle = plot.color;
+                timeCtx.lineWidth = 2;
+
+                const timeScale = width / 4;
+                let prevValue = null;
+                let pathStarted = false;
+
+                history.forEach((point, i) => {
+                    const x = width - (history.length - i - 1) * (width / maxHistory);
+                    let value = point[plot.data];
+
+                    // For tangent, detect discontinuities
+                    if (plot.data === 'tanValue') {
+                        // Check if there's a discontinuity (jump from -∞ to +∞ or vice versa)
+                        if (prevValue !== null && Math.abs(value - prevValue) > plot.limit) {
+                            // Discontinuity detected - end current path and start new one
+                            if (pathStarted) {
+                                timeCtx.stroke();
+                            }
+                            pathStarted = false;
+                        }
+                        prevValue = value;
+
+                        // Clamp for display but don't lose the actual value
+                        value = Math.max(-plot.limit, Math.min(plot.limit, value));
+                    }
+
+                    const y = centerY - (value / plot.limit) * (plotHeight / 2) * 0.8;
+
+                    if (!pathStarted) {
+                        timeCtx.beginPath();
+                        timeCtx.moveTo(x, y);
+                        pathStarted = true;
+                    } else {
+                        timeCtx.lineTo(x, y);
+                    }
+                });
+
+                if (pathStarted) {
+                    timeCtx.stroke();
+                }
+
+                // Current value marker
+                if (history.length > 0) {
+                    let currentValue = history[history.length - 1][plot.data];
+                    if (plot.data === 'tanValue') {
+                        currentValue = Math.max(-plot.limit, Math.min(plot.limit, currentValue));
+                    }
+                    const currentY = centerY - (currentValue / plot.limit) * (plotHeight / 2) * 0.8;
+
+                    timeCtx.fillStyle = plot.color;
+                    timeCtx.beginPath();
+                    timeCtx.arc(width - 5, currentY, 4, 0, 2 * Math.PI);
+                    timeCtx.fill();
+                }
+
+                // Separator line
+                if (idx < 2) {
+                    timeCtx.strokeStyle = '#ddd';
+                    timeCtx.lineWidth = 1;
+                    timeCtx.beginPath();
+                    timeCtx.moveTo(0, offsetY + plotHeight);
+                    timeCtx.lineTo(width, offsetY + plotHeight);
+                    timeCtx.stroke();
+                }
+            });
+
+            // X-axis labels (time axis with π markers) - only for bottom plot
+            if (history.length > 0) {
+                const currentTime = history[history.length - 1].time;
+                const timeRange = (maxHistory * 0.03); // Approximate time range shown
+                const startTime = currentTime - timeRange;
+
+                timeCtx.fillStyle = '#666';
+                timeCtx.font = '12px sans-serif';
+                timeCtx.textAlign = 'center';
+                timeCtx.textBaseline = 'top';
+
+                // Draw π markers at suitable intervals
+                const piInterval = Math.PI;
+                const startPi = Math.floor(startTime / piInterval) * piInterval;
+
+                for (let t = startPi; t <= currentTime + piInterval; t += piInterval) {
+                    if (t < startTime) continue;
+
+                    // Calculate x position
+                    const normalizedPos = (t - startTime) / timeRange;
+                    const x = normalizedPos * width;
+
+                    if (x >= 0 && x <= width) {
+                        // Draw tick mark
+                        timeCtx.strokeStyle = '#999';
+                        timeCtx.lineWidth = 1;
+                        timeCtx.beginPath();
+                        timeCtx.moveTo(x, height - 5);
+                        timeCtx.lineTo(x, height);
+                        timeCtx.stroke();
+
+                        // Draw label
+                        const piMultiple = Math.round(t / Math.PI);
+                        let label;
+                        if (piMultiple === 0) {
+                            label = '0';
+                        } else if (piMultiple === 1) {
+                            label = 'π';
+                        } else {
+                            label = `${piMultiple}π`;
+                        }
+                        timeCtx.fillText(label, x, height - 3);
+                    }
+                }
+            }
+        }
+
+        function animate() {
+            if (!isAnimating) return;
+
+            time += 0.03;
+
+            drawCircle();
+            drawTimePlots();
+
+            animationId = requestAnimationFrame(animate);
+        }
+
+        // Initial draw
+        drawCircle();
+        drawTimePlots();
+    </script>
+</body>
+</html>

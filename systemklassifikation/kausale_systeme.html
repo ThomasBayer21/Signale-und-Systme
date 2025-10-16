@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kausale Systeme</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 2em;
+            font-weight: 600;
+        }
+        .description {
+            text-align: center;
+            color: #555;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+        .container {
+            background: white;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .info-box {
+            background: #ecf0f1;
+            padding: 20px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            border-left: 4px solid #e74c3c;
+        }
+        .info-box h3 {
+            margin: 0 0 10px 0;
+            font-size: 1.1em;
+            color: #2c3e50;
+        }
+        .info-box p {
+            margin: 5px 0;
+            color: #555;
+            line-height: 1.5;
+        }
+        .equation {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 6px;
+            text-align: center;
+            font-family: 'Courier New', monospace;
+            font-size: 1.2em;
+            margin: 20px 0;
+            color: #2c3e50;
+            border: 1px solid #ddd;
+        }
+        .comparison {
+            display: flex;
+            gap: 20px;
+            margin: 30px 0;
+        }
+        .system-column {
+            flex: 1;
+            padding: 20px;
+            border-radius: 6px;
+            background: #fafafa;
+        }
+        .system-column.causal {
+            border: 2px solid #4CAF50;
+        }
+        .system-column.non-causal {
+            border: 2px solid #F44336;
+        }
+        .system-title {
+            text-align: center;
+            font-weight: 600;
+            font-size: 18px;
+            margin-bottom: 15px;
+        }
+        .system-title.causal {
+            color: #2e7d32;
+        }
+        .system-title.non-causal {
+            color: #c62828;
+        }
+        canvas {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background: white;
+            display: block;
+            margin: 15px auto;
+        }
+        .signal-label {
+            text-align: center;
+            font-weight: 500;
+            margin: 15px 0 10px 0;
+            color: #555;
+            font-size: 15px;
+        }
+        .controls {
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            align-items: center;
+            margin: 25px 0;
+            padding: 25px;
+            background: #fafafa;
+            border-radius: 6px;
+            border: 1px solid #e0e0e0;
+        }
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            align-items: center;
+        }
+        .play-button {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            margin: 10px;
+        }
+        .play-button:hover {
+            background: #c0392b;
+        }
+        .time-marker {
+            width: 100%;
+            text-align: center;
+            font-size: 16px;
+            color: #555;
+            margin: 10px 0;
+            font-weight: 500;
+        }
+        .time-display {
+            color: #e74c3c;
+            font-size: 1.3em;
+            font-weight: 600;
+        }
+        .explanation {
+            background: rgba(255,255,255,0.7);
+            padding: 15px;
+            border-radius: 6px;
+            margin: 10px 0;
+            font-size: 14px;
+            line-height: 1.6;
+            text-align: center;
+            font-weight: 500;
+            border: 1px solid #ddd;
+        }
+        .legend {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin: 20px 0;
+            padding: 15px;
+            background: #fafafa;
+            border-radius: 6px;
+            flex-wrap: wrap;
+            border: 1px solid #e0e0e0;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .legend-color {
+            width: 30px;
+            height: 3px;
+            border-radius: 2px;
+        }
+        .legend-line {
+            width: 30px;
+            height: 2px;
+            border-top: 2px dashed;
+        }
+        .key-insight {
+            background: #f0f8f0;
+            padding: 20px;
+            border-radius: 6px;
+            margin: 20px 0;
+            border: 1px solid #4caf50;
+        }
+        .key-insight h4 {
+            color: #2e7d32;
+            margin: 0 0 10px 0;
+            font-weight: 500;
+        }
+        .key-insight p {
+            margin: 5px 0;
+            color: #555;
+            line-height: 1.6;
+        }
+        .badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+        .badge.possible {
+            background: #4CAF50;
+            color: white;
+        }
+        .badge.impossible {
+            background: #F44336;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <h1>Kausale Systeme</h1>
+    <div class="description">Der Ausgang hängt nur von gegenwärtigen und vergangenen Eingangswerten ab</div>
+
+    <div class="container">
+        <div class="info-box">
+            <h3>Anleitung</h3>
+            <p>Starte die Animation und beobachte die rote Zeitlinie</p>
+            <p>Links: Ausgang nutzt nur vergangene Werte</p>
+            <p>Rechts: Ausgang nutzt zukünftige Werte (nicht realisierbar)</p>
+        </div>
+
+        <div class="equation">
+            Kausal: y(t₀) = f(x(t)) für alle t ≤ t₀
+        </div>
+
+        <div class="controls">
+            <div class="control-group">
+                <button class="play-button" id="play-btn">Animation starten</button>
+                <div class="time-marker">Aktuelle Zeit: <span class="time-display" id="current-time">0.0</span> s</div>
+            </div>
+        </div>
+
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-color" style="background: #2196F3;"></div>
+                <span>Eingang x(t)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #4CAF50;"></div>
+                <span>Kausaler Ausgang</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #F44336;"></div>
+                <span>Nicht-kausaler Ausgang</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-line" style="border-color: #ccc;"></div>
+                <span>Zukunft (unbekannt)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #FF5722;"></div>
+                <span>Zeitmarker t₀</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-line" style="border-color: #FF9800;"></div>
+                <span>Zugriff auf Zukunft</span>
+            </div>
+        </div>
+
+        <div class="comparison">
+            <div class="system-column causal">
+                <div class="system-title causal">Kausales System</div>
+                <div class="explanation">
+                    y(t) = x(t) + 0.3·x(t-0.5)<br>
+                    Nutzt nur aktuelle und vergangene Werte
+                </div>
+
+                <div class="signal-label">Eingang x(t)</div>
+                <canvas id="input-causal" width="420" height="110"></canvas>
+
+                <div class="signal-label">Ausgang y(t)</div>
+                <canvas id="output-causal" width="420" height="110"></canvas>
+
+                <div class="badge possible">Realisierbar</div>
+            </div>
+
+            <div class="system-column non-causal">
+                <div class="system-title non-causal">Nicht-kausales System</div>
+                <div class="explanation">
+                    y(t) = 0.7·x(t+1.5) + x(t)<br>
+                    Nutzt zukünftige Werte (t+1.5)
+                </div>
+
+                <div class="signal-label">Eingang x(t)</div>
+                <canvas id="input-noncausal" width="420" height="110"></canvas>
+
+                <div class="signal-label">Ausgang y(t)</div>
+                <canvas id="output-noncausal" width="420" height="110"></canvas>
+
+                <div class="badge impossible">Nicht realisierbar</div>
+            </div>
+        </div>
+
+        <div class="key-insight">
+            <h4>Kernaussage</h4>
+            <p>Kausale Systeme können nur mit bereits bekannten Informationen arbeiten.</p>
+            <p>Der Ausgang zum Zeitpunkt t₀ darf nicht von Eingangswerten für t > t₀ abhängen.</p>
+            <p>Beispiel: Ein Echtzeit-Filter in der Signalverarbeitung muss kausal sein.</p>
+        </div>
+    </div>
+
+    <script>
+        const canvases = {
+            inputCausal: document.getElementById('input-causal'),
+            outputCausal: document.getElementById('output-causal'),
+            inputNoncausal: document.getElementById('input-noncausal'),
+            outputNoncausal: document.getElementById('output-noncausal')
+        };
+
+        const contexts = {};
+        for (let key in canvases) {
+            contexts[key] = canvases[key].getContext('2d');
+        }
+
+        let currentTime = 0;
+        let isPlaying = false;
+        let animationId = null;
+
+        // Input signal function - step function with sine
+        function inputSignal(t) {
+            if (t < 5) return 0;
+            // Step at t=5 with damped oscillation
+            return (1 - Math.exp(-(t-5) * 0.8)) * Math.sin(2 * Math.PI * 0.8 * (t-5));
+        }
+
+        // Causal system: y(t) = x(t) + 0.3*x(t-0.5)
+        // Output only depends on past and present
+        function causalOutput(t) {
+            return inputSignal(t) + 0.3 * inputSignal(t - 0.5);
+        }
+
+        // Non-causal system: y(t) = 0.7*x(t+1.5) + x(t)
+        // Output depends on future values - system "anticipates" significantly
+        function nonCausalOutput(t) {
+            return 0.7 * inputSignal(t + 1.5) + inputSignal(t);
+        }
+
+        function drawSignal(ctx, signalFunc, currentT, color = '#2196F3', showFuture = false, highlightFuture = false) {
+            const width = ctx.canvas.width;
+            const height = ctx.canvas.height;
+            const maxTime = 10;
+
+            ctx.clearRect(0, 0, width, height);
+
+            // Grid
+            ctx.strokeStyle = '#f0f0f0';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(0, height/2);
+            ctx.lineTo(width, height/2);
+            ctx.stroke();
+
+            // Vertical grid
+            for (let i = 0; i <= 10; i++) {
+                const x = (i / 10) * width;
+                ctx.beginPath();
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x, height);
+                ctx.stroke();
+            }
+
+            // Time labels
+            ctx.fillStyle = '#999';
+            ctx.font = '10px sans-serif';
+            ctx.textAlign = 'center';
+            for (let i = 0; i <= 10; i += 2) {
+                const x = (i / 10) * width;
+                ctx.fillText(`${i}s`, x, height - 5);
+            }
+
+            // Highlight future region for non-causal system (shows where it "looks")
+            if (highlightFuture && currentT < maxTime) {
+                const futureTime = currentT + 1.5;
+                if (futureTime <= maxTime) {
+                    const futureX = (futureTime / maxTime) * width;
+                    // Draw highlighted future region
+                    ctx.fillStyle = 'rgba(255, 152, 0, 0.15)';
+                    ctx.fillRect(futureX - 15, 0, 30, height);
+
+                    // Draw arrow from future to now
+                    ctx.strokeStyle = '#FF9800';
+                    ctx.lineWidth = 2;
+                    ctx.setLineDash([4, 4]);
+                    ctx.beginPath();
+                    ctx.moveTo(futureX, height/2 - 20);
+                    ctx.lineTo((currentT / maxTime) * width, height/2 - 20);
+                    ctx.stroke();
+
+                    // Arrow head
+                    const arrowX = (currentT / maxTime) * width;
+                    ctx.setLineDash([]);
+                    ctx.beginPath();
+                    ctx.moveTo(arrowX, height/2 - 20);
+                    ctx.lineTo(arrowX + 5, height/2 - 15);
+                    ctx.moveTo(arrowX, height/2 - 20);
+                    ctx.lineTo(arrowX + 5, height/2 - 25);
+                    ctx.stroke();
+
+                    // Label
+                    ctx.fillStyle = '#FF9800';
+                    ctx.font = 'bold 9px sans-serif';
+                    ctx.fillText('nutzt t+1.5s', (futureX + arrowX) / 2, height/2 - 25);
+                }
+            }
+
+            // Current time marker
+            const markerX = (currentT / maxTime) * width;
+            ctx.strokeStyle = '#FF5722';
+            ctx.lineWidth = 2;
+            ctx.setLineDash([]);
+            ctx.beginPath();
+            ctx.moveTo(markerX, 0);
+            ctx.lineTo(markerX, height);
+            ctx.stroke();
+
+            // "NOW" label
+            ctx.fillStyle = '#FF5722';
+            ctx.font = 'bold 10px sans-serif';
+            ctx.fillText('JETZT', markerX, 12);
+
+            // Signal (past and present)
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 2.5;
+            ctx.beginPath();
+
+            let started = false;
+            for (let x = 0; x < width; x++) {
+                const t = (x / width) * maxTime;
+
+                if (!showFuture && t > currentT) {
+                    break;
+                }
+
+                const val = signalFunc(t);
+                const y = height/2 - (val * (height/2 * 0.75));
+
+                if (!started) {
+                    ctx.moveTo(x, y);
+                    started = true;
+                } else {
+                    ctx.lineTo(x, y);
+                }
+            }
+
+            ctx.stroke();
+
+            // Future signal (dashed, if showFuture)
+            if (showFuture) {
+                ctx.strokeStyle = '#bbb';
+                ctx.lineWidth = 1.5;
+                ctx.setLineDash([6, 4]);
+                ctx.beginPath();
+
+                started = false;
+                for (let x = 0; x < width; x++) {
+                    const t = (x / width) * maxTime;
+
+                    if (t <= currentT) continue;
+
+                    const val = signalFunc(t);
+                    const y = height/2 - (val * (height/2 * 0.75));
+
+                    if (!started) {
+                        ctx.moveTo(x, y);
+                        started = true;
+                    } else {
+                        ctx.lineTo(x, y);
+                    }
+                }
+
+                ctx.stroke();
+                ctx.setLineDash([]);
+            }
+
+            // Shade future region
+            if (!showFuture) {
+                ctx.fillStyle = 'rgba(200, 200, 200, 0.15)';
+                ctx.fillRect(markerX, 0, width - markerX, height);
+            }
+        }
+
+        function draw() {
+            document.getElementById('current-time').textContent = currentTime.toFixed(1);
+
+            // Causal system
+            drawSignal(contexts.inputCausal, inputSignal, currentTime, '#2196F3', true, false);
+            drawSignal(contexts.outputCausal, causalOutput, currentTime, '#4CAF50', false, false);
+
+            // Non-causal system - highlight where it looks into the future
+            drawSignal(contexts.inputNoncausal, inputSignal, currentTime, '#2196F3', true, true);
+            drawSignal(contexts.outputNoncausal, nonCausalOutput, currentTime, '#F44336', false, false);
+        }
+
+        function animate() {
+            if (!isPlaying) return;
+
+            currentTime += 0.08;
+            if (currentTime > 10) {
+                currentTime = 0;
+            }
+
+            draw();
+            animationId = requestAnimationFrame(animate);
+        }
+
+        document.getElementById('play-btn').addEventListener('click', () => {
+            isPlaying = !isPlaying;
+            const btn = document.getElementById('play-btn');
+
+            if (isPlaying) {
+                btn.textContent = 'Animation stoppen';
+                animate();
+            } else {
+                btn.textContent = 'Animation starten';
+                if (animationId) {
+                    cancelAnimationFrame(animationId);
+                }
+            }
+        });
+
+        draw();
+    </script>
+</body>
+</html>

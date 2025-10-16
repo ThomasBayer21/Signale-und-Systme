@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dezibel-Skala</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 2em;
+            font-weight: 600;
+        }
+        .description {
+            text-align: center;
+            color: #555;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+        .container {
+            background: white;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .info-box {
+            background: #ecf0f1;
+            padding: 20px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            border-left: 4px solid #e74c3c;
+        }
+        .info-box h3 {
+            margin: 0 0 10px 0;
+            font-size: 1.1em;
+            color: #2c3e50;
+        }
+        .info-box p {
+            margin: 5px 0;
+            color: #555;
+            line-height: 1.5;
+        }
+        .equation-box {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 6px;
+            margin: 20px 0;
+            border: 1px solid #ddd;
+        }
+        .equation {
+            text-align: center;
+            font-family: 'Courier New', monospace;
+            font-size: 1.1em;
+            color: #2c3e50;
+            margin: 10px 0;
+        }
+        .controls {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin: 25px 0;
+            padding: 25px;
+            background: #fafafa;
+            border-radius: 6px;
+            border: 1px solid #e0e0e0;
+        }
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .control-group label {
+            font-size: 14px;
+            color: #555;
+            font-weight: 500;
+        }
+        .value-display {
+            font-size: 1.1em;
+            color: #e74c3c;
+            font-weight: 600;
+        }
+        input[type="range"] {
+            width: 100%;
+            height: 4px;
+            border-radius: 2px;
+            background: #ddd;
+            outline: none;
+            -webkit-appearance: none;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #e74c3c;
+            cursor: pointer;
+        }
+        input[type="range"]::-moz-range-thumb {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #e74c3c;
+            cursor: pointer;
+            border: none;
+        }
+        .canvas-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 30px 0;
+        }
+        .canvas-container {
+            text-align: center;
+        }
+        .canvas-label {
+            font-weight: 500;
+            margin-bottom: 10px;
+            color: #555;
+            font-size: 15px;
+        }
+        canvas {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background: white;
+            width: 100%;
+        }
+        .value-table {
+            margin: 20px 0;
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .value-table th,
+        .value-table td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+        .value-table th {
+            background: #ecf0f1;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+        .value-table tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+        .highlight-row {
+            background: #fff3cd !important;
+            font-weight: 600;
+        }
+        .reference-box {
+            background: #f0f8f0;
+            padding: 20px;
+            border-radius: 6px;
+            margin: 20px 0;
+            border: 1px solid #4caf50;
+        }
+        .reference-box h4 {
+            color: #2e7d32;
+            margin: 0 0 10px 0;
+            font-weight: 500;
+        }
+        .reference-box p {
+            margin: 5px 0;
+            color: #555;
+            line-height: 1.6;
+        }
+        .back-link {
+            text-align: center;
+            margin-top: 30px;
+        }
+        .back-link a {
+            color: #3498db;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .back-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <h1>Dezibel-Skala</h1>
+    <div class="description">Logarithmische Darstellung von Amplituden und Leistungen</div>
+
+    <div class="container">
+        <div class="info-box">
+            <h3>Anleitung</h3>
+            <p>Bewege den Schieberegler und beobachte die Unterschiede zwischen linearer und logarithmischer Darstellung</p>
+            <p>Die Dezibel-Skala komprimiert große Wertebereiche und macht Verhältnisse besser vergleichbar</p>
+        </div>
+
+        <div class="equation-box">
+            <div class="equation">Spannung/Amplitude: L<sub>dB</sub> = 20 · log<sub>10</sub>(A / A<sub>0</sub>)</div>
+            <div class="equation">Leistung: L<sub>dB</sub> = 10 · log<sub>10</sub>(P / P<sub>0</sub>)</div>
+        </div>
+
+        <div class="controls">
+            <div class="control-group">
+                <label>Amplitude (relativ zur Referenz): <span class="value-display" id="amp-value">1.00</span></label>
+                <input type="range" id="amplitude" min="0.01" max="10" step="0.01" value="1">
+            </div>
+            <div class="control-group">
+                <label>
+                    Wert in Dezibel: <span class="value-display" id="db-value">0.0</span> dB
+                    <span style="margin-left: 20px;">Leistungsverhältnis: <span class="value-display" id="power-value">1.00</span></span>
+                </label>
+            </div>
+        </div>
+
+        <div class="canvas-row">
+            <div class="canvas-container">
+                <div class="canvas-label">Lineare Skala</div>
+                <canvas id="linear-canvas" width="400" height="300"></canvas>
+            </div>
+            <div class="canvas-container">
+                <div class="canvas-label">Logarithmische Skala (dB)</div>
+                <canvas id="db-canvas" width="400" height="300"></canvas>
+            </div>
+        </div>
+
+        <div class="reference-box">
+            <h4>Wichtige Punkte</h4>
+            <p><strong>0 dB:</strong> Referenzwert (keine Verstärkung/Dämpfung)</p>
+            <p><strong>±3 dB:</strong> Halbe/Doppelte Leistung (wichtig für Grenzfrequenzen)</p>
+            <p><strong>±6 dB:</strong> Halbe/Doppelte Amplitude</p>
+            <p><strong>±20 dB:</strong> Zehntel/Zehnfache Amplitude</p>
+        </div>
+
+        <div class="back-link">
+            <a href="index.html">← Zurück zur Übersicht</a>
+        </div>
+    </div>
+
+    <script>
+        const linearCanvas = document.getElementById('linear-canvas');
+        const dbCanvas = document.getElementById('db-canvas');
+        const linearCtx = linearCanvas.getContext('2d');
+        const dbCtx = dbCanvas.getContext('2d');
+
+        let amplitude = 1.0;
+
+        document.getElementById('amplitude').addEventListener('input', (e) => {
+            amplitude = parseFloat(e.target.value);
+            document.getElementById('amp-value').textContent = amplitude.toFixed(2);
+
+            const db = 20 * Math.log10(amplitude);
+            document.getElementById('db-value').textContent = db.toFixed(1);
+
+            const power = amplitude * amplitude;
+            document.getElementById('power-value').textContent = power.toFixed(2);
+
+            draw();
+        });
+
+        function drawLinearScale() {
+            const width = linearCanvas.width;
+            const height = linearCanvas.height;
+            const margin = 60;
+
+            linearCtx.clearRect(0, 0, width, height);
+
+            // Grid
+            linearCtx.strokeStyle = '#f0f0f0';
+            linearCtx.lineWidth = 1;
+            for (let i = 0; i <= 10; i++) {
+                const y = margin + (i / 10) * (height - 2 * margin);
+                linearCtx.beginPath();
+                linearCtx.moveTo(margin, y);
+                linearCtx.lineTo(width - margin/2, y);
+                linearCtx.stroke();
+            }
+
+            // Axes
+            linearCtx.strokeStyle = '#333';
+            linearCtx.lineWidth = 2;
+            linearCtx.beginPath();
+            linearCtx.moveTo(margin, margin);
+            linearCtx.lineTo(margin, height - margin);
+            linearCtx.lineTo(width - margin/2, height - margin);
+            linearCtx.stroke();
+
+            // Y-axis labels
+            linearCtx.fillStyle = '#666';
+            linearCtx.font = '12px sans-serif';
+            linearCtx.textAlign = 'right';
+            for (let i = 0; i <= 10; i++) {
+                const y = height - margin - (i / 10) * (height - 2 * margin);
+                const value = i;
+                linearCtx.fillText(value.toFixed(0), margin - 10, y + 4);
+            }
+
+            // Axis title
+            linearCtx.save();
+            linearCtx.translate(20, height / 2);
+            linearCtx.rotate(-Math.PI / 2);
+            linearCtx.textAlign = 'center';
+            linearCtx.fillText('Amplitude', 0, 0);
+            linearCtx.restore();
+
+            // Bar for current amplitude
+            const barWidth = 80;
+            const barHeight = (amplitude / 10) * (height - 2 * margin);
+            const barX = (width - margin/2 - margin - barWidth) / 2 + margin;
+            const barY = height - margin - barHeight;
+
+            linearCtx.fillStyle = '#e74c3c';
+            linearCtx.fillRect(barX, barY, barWidth, barHeight);
+
+            // Value label
+            linearCtx.fillStyle = '#2c3e50';
+            linearCtx.font = 'bold 14px sans-serif';
+            linearCtx.textAlign = 'center';
+            linearCtx.fillText(amplitude.toFixed(2), barX + barWidth / 2, barY - 10);
+
+            // Reference line at 1.0
+            const refY = height - margin - (1 / 10) * (height - 2 * margin);
+            linearCtx.strokeStyle = '#27ae60';
+            linearCtx.lineWidth = 2;
+            linearCtx.setLineDash([5, 5]);
+            linearCtx.beginPath();
+            linearCtx.moveTo(margin, refY);
+            linearCtx.lineTo(width - margin/2, refY);
+            linearCtx.stroke();
+            linearCtx.setLineDash([]);
+
+            linearCtx.fillStyle = '#27ae60';
+            linearCtx.font = '12px sans-serif';
+            linearCtx.textAlign = 'left';
+            linearCtx.fillText('Referenz (1.0)', width - margin/2 - 100, refY - 5);
+        }
+
+        function drawDbScale() {
+            const width = dbCanvas.width;
+            const height = dbCanvas.height;
+            const margin = 60;
+
+            dbCtx.clearRect(0, 0, width, height);
+
+            // Grid
+            dbCtx.strokeStyle = '#f0f0f0';
+            dbCtx.lineWidth = 1;
+
+            // dB range: -40 to +20
+            const dbMin = -40;
+            const dbMax = 20;
+            const dbRange = dbMax - dbMin;
+
+            for (let db = dbMin; db <= dbMax; db += 10) {
+                const y = margin + ((dbMax - db) / dbRange) * (height - 2 * margin);
+                dbCtx.beginPath();
+                dbCtx.moveTo(margin, y);
+                dbCtx.lineTo(width - margin/2, y);
+                dbCtx.stroke();
+            }
+
+            // Axes
+            dbCtx.strokeStyle = '#333';
+            dbCtx.lineWidth = 2;
+            dbCtx.beginPath();
+            dbCtx.moveTo(margin, margin);
+            dbCtx.lineTo(margin, height - margin);
+            dbCtx.lineTo(width - margin/2, height - margin);
+            dbCtx.stroke();
+
+            // Y-axis labels
+            dbCtx.fillStyle = '#666';
+            dbCtx.font = '12px sans-serif';
+            dbCtx.textAlign = 'right';
+            for (let db = dbMin; db <= dbMax; db += 10) {
+                const y = margin + ((dbMax - db) / dbRange) * (height - 2 * margin);
+                dbCtx.fillText(db.toFixed(0) + ' dB', margin - 10, y + 4);
+            }
+
+            // Axis title
+            dbCtx.save();
+            dbCtx.translate(20, height / 2);
+            dbCtx.rotate(-Math.PI / 2);
+            dbCtx.textAlign = 'center';
+            dbCtx.fillText('Pegel (dB)', 0, 0);
+            dbCtx.restore();
+
+            // Bar for current amplitude in dB
+            const currentDb = 20 * Math.log10(amplitude);
+            const barWidth = 80;
+
+            const refY = margin + ((dbMax - 0) / dbRange) * (height - 2 * margin);
+            const currentY = margin + ((dbMax - currentDb) / dbRange) * (height - 2 * margin);
+
+            let barHeight, barY;
+            if (currentDb >= 0) {
+                barHeight = refY - currentY;
+                barY = currentY;
+            } else {
+                barHeight = currentY - refY;
+                barY = refY;
+            }
+
+            const barX = (width - margin/2 - margin - barWidth) / 2 + margin;
+
+            dbCtx.fillStyle = '#e74c3c';
+            dbCtx.fillRect(barX, barY, barWidth, barHeight);
+
+            // Value label
+            dbCtx.fillStyle = '#2c3e50';
+            dbCtx.font = 'bold 14px sans-serif';
+            dbCtx.textAlign = 'center';
+            dbCtx.fillText(currentDb.toFixed(1) + ' dB', barX + barWidth / 2, currentY - 10);
+
+            // Reference line at 0 dB
+            dbCtx.strokeStyle = '#27ae60';
+            dbCtx.lineWidth = 2;
+            dbCtx.setLineDash([5, 5]);
+            dbCtx.beginPath();
+            dbCtx.moveTo(margin, refY);
+            dbCtx.lineTo(width - margin/2, refY);
+            dbCtx.stroke();
+            dbCtx.setLineDash([]);
+
+            dbCtx.fillStyle = '#27ae60';
+            dbCtx.font = '12px sans-serif';
+            dbCtx.textAlign = 'left';
+            dbCtx.fillText('0 dB (Referenz)', width - margin/2 - 100, refY - 5);
+
+            // Mark important dB values
+            const importantDb = [-40, -20, -6, -3, 3, 6, 20];
+            dbCtx.strokeStyle = '#999';
+            dbCtx.lineWidth = 1;
+            dbCtx.setLineDash([2, 4]);
+
+            importantDb.forEach(db => {
+                if (db !== 0) {
+                    const y = margin + ((dbMax - db) / dbRange) * (height - 2 * margin);
+                    dbCtx.beginPath();
+                    dbCtx.moveTo(margin, y);
+                    dbCtx.lineTo(width - margin/2, y);
+                    dbCtx.stroke();
+                }
+            });
+
+            dbCtx.setLineDash([]);
+        }
+
+        function draw() {
+            drawLinearScale();
+            drawDbScale();
+        }
+
+        draw();
+    </script>
+</body>
+</html>

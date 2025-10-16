@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verschiebungsprinzip (Time Invariance)</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1100px;
+            margin: 40px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 2em;
+            font-weight: 600;
+        }
+        .description {
+            text-align: center;
+            color: #555;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+        .container {
+            background: white;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .info-box {
+            background: #ecf0f1;
+            padding: 20px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            border-left: 4px solid #27ae60;
+        }
+        .info-box h3 {
+            margin: 0 0 10px 0;
+            font-size: 1.1em;
+            color: #2c3e50;
+        }
+        .info-box p {
+            margin: 5px 0;
+            color: #555;
+            line-height: 1.5;
+        }
+        .equation {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 6px;
+            text-align: center;
+            font-family: 'Courier New', monospace;
+            font-size: 1.2em;
+            margin: 20px 0;
+            color: #2c3e50;
+            border: 1px solid #ddd;
+        }
+        .controls {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            align-items: center;
+            margin: 25px 0;
+            padding: 25px;
+            background: #fafafa;
+            border-radius: 6px;
+            border: 1px solid #e0e0e0;
+        }
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 100%;
+            max-width: 500px;
+        }
+        .control-group label {
+            font-size: 15px;
+            color: #555;
+            font-weight: 500;
+            text-align: center;
+        }
+        .value-display {
+            font-size: 1.3em;
+            color: #27ae60;
+            font-weight: 600;
+        }
+        .delay-indicator {
+            text-align: center;
+            font-size: 0.9em;
+            color: #7f8c8d;
+            margin-top: 5px;
+        }
+        input[type="range"] {
+            width: 100%;
+            height: 4px;
+            border-radius: 2px;
+            background: #27ae60;
+            outline: none;
+            -webkit-appearance: none;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: white;
+            cursor: pointer;
+            border: 3px solid #27ae60;
+        }
+        input[type="range"]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: white;
+            cursor: pointer;
+            border: 3px solid #27ae60;
+        }
+        .demo-section {
+            margin: 30px 0;
+        }
+        .signal-row {
+            display: flex;
+            align-items: center;
+            margin: 25px 0;
+            gap: 15px;
+            padding: 20px;
+            background: #fafafa;
+            border-radius: 6px;
+        }
+        .signal-row.original {
+            border: 2px solid #2196F3;
+        }
+        .signal-row.delayed {
+            border: 2px solid #FF9800;
+        }
+        .signal-box {
+            flex: 1;
+            text-align: center;
+        }
+        .signal-label {
+            font-weight: 500;
+            margin-bottom: 10px;
+            color: #555;
+            font-size: 15px;
+        }
+        canvas {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background: white;
+        }
+        .operator {
+            font-size: 24px;
+            font-weight: bold;
+            color: #7f8c8d;
+            min-width: 30px;
+            text-align: center;
+        }
+        .system-box {
+            background: #ecf0f1;
+            padding: 20px;
+            border-radius: 6px;
+            text-align: center;
+            font-weight: 500;
+            color: #2c3e50;
+            min-width: 130px;
+            border: 1px solid #bdc3c7;
+        }
+        .system-box small {
+            display: block;
+            font-size: 0.85em;
+            margin-top: 5px;
+            color: #7f8c8d;
+        }
+        .separator {
+            border-top: 2px dashed #bdc3c7;
+            margin: 40px 0;
+            position: relative;
+        }
+        .separator::after {
+            content: 'Zeitverschiebung τ';
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: white;
+            padding: 0 15px;
+            color: #7f8c8d;
+            font-weight: 500;
+        }
+        .verification {
+            background: #f0f8f0;
+            padding: 20px;
+            border-radius: 6px;
+            text-align: center;
+            margin: 20px 0;
+            border: 1px solid #4caf50;
+        }
+        .verification h4 {
+            color: #2e7d32;
+            margin: 0 0 10px 0;
+            font-weight: 500;
+        }
+        .verification p {
+            margin: 5px 0;
+            color: #555;
+            line-height: 1.6;
+        }
+        .legend {
+            display: flex;
+            gap: 25px;
+            justify-content: center;
+            margin: 20px 0;
+            padding: 15px;
+            background: #fafafa;
+            border-radius: 6px;
+            border: 1px solid #e0e0e0;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .legend-color {
+            width: 30px;
+            height: 3px;
+            border-radius: 2px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Verschiebungsprinzip</h1>
+    <div class="description">Zeitinvariante Systeme: Die Form bleibt erhalten, nur die Position verschiebt sich</div>
+
+    <div class="container">
+        <div class="info-box">
+            <h3>Anleitung</h3>
+            <p>Bewege den Schieberegler um das Signal in der Zeit zu verschieben</p>
+            <p>Beobachte: Der Ausgang verschiebt sich um genau den gleichen Betrag</p>
+        </div>
+
+        <div class="equation">
+            Wenn x(t) → y(t), dann x(t - τ) → y(t - τ)
+        </div>
+
+        <div class="controls">
+            <div class="control-group">
+                <label>Zeitverschiebung τ: <span class="value-display" id="delay-value">1.0</span> s</label>
+                <input type="range" id="delay" min="0" max="3" step="0.1" value="1">
+                <div class="delay-indicator">
+                    <span id="delay-text">Signal um 1.0s nach rechts verschoben</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-color" style="background: #2196F3;"></div>
+                <span>Eingang (Gaußimpuls)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #F44336;"></div>
+                <span>Ausgang (quadriert)</span>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <div class="signal-row original">
+                <div class="signal-box">
+                    <div class="signal-label">Originaleingang x(t)</div>
+                    <canvas id="input-original" width="320" height="130"></canvas>
+                </div>
+                <div class="operator">→</div>
+                <div class="system-box">
+                    System T
+                    <small>y(t) = x²(t)</small>
+                </div>
+                <div class="operator">→</div>
+                <div class="signal-box">
+                    <div class="signal-label">Originalausgang y(t)</div>
+                    <canvas id="output-original" width="320" height="130"></canvas>
+                </div>
+            </div>
+
+            <div class="separator"></div>
+
+            <div class="signal-row delayed">
+                <div class="signal-box">
+                    <div class="signal-label">Verschobener Eingang x(t - τ)</div>
+                    <canvas id="input-delayed" width="320" height="130"></canvas>
+                </div>
+                <div class="operator">→</div>
+                <div class="system-box">
+                    System T
+                    <small>y(t) = x²(t)</small>
+                </div>
+                <div class="operator">→</div>
+                <div class="signal-box">
+                    <div class="signal-label">Verschobener Ausgang y(t - τ)</div>
+                    <canvas id="output-delayed" width="320" height="130"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="verification">
+            <h4>Zeitinvarianz erfüllt</h4>
+            <p>Die Form beider Signalpaare ist identisch - nur die zeitliche Position ändert sich</p>
+            <p>Die Peaks verschieben sich um den gleichen Betrag τ</p>
+            <p>Das System verhält sich zu jedem Zeitpunkt gleich → zeitinvariant</p>
+        </div>
+    </div>
+
+    <script>
+        const canvases = {
+            inputOriginal: document.getElementById('input-original'),
+            outputOriginal: document.getElementById('output-original'),
+            inputDelayed: document.getElementById('input-delayed'),
+            outputDelayed: document.getElementById('output-delayed')
+        };
+
+        const contexts = {};
+        for (let key in canvases) {
+            contexts[key] = canvases[key].getContext('2d');
+        }
+
+        let delay = 1.0;
+
+        document.getElementById('delay').addEventListener('input', (e) => {
+            delay = parseFloat(e.target.value);
+            document.getElementById('delay-value').textContent = delay.toFixed(1);
+
+            const delayText = document.getElementById('delay-text');
+            if (delay === 0) {
+                delayText.textContent = 'Keine Verschiebung';
+            } else {
+                delayText.textContent = `Signal um ${delay.toFixed(1)}s nach rechts verschoben`;
+            }
+
+            draw();
+        });
+
+        function drawSignal(ctx, delayAmount, isOutput = false, color = '#2196F3') {
+            const width = ctx.canvas.width;
+            const height = ctx.canvas.height;
+
+            ctx.clearRect(0, 0, width, height);
+
+            // Grid
+            ctx.strokeStyle = '#f0f0f0';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(0, height/2);
+            ctx.lineTo(width, height/2);
+            ctx.stroke();
+
+            // Vertical grid lines
+            for (let i = 0; i <= 8; i++) {
+                const x = (i / 8) * width;
+                ctx.beginPath();
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x, height);
+                ctx.stroke();
+            }
+
+            // Time axis labels
+            ctx.fillStyle = '#999';
+            ctx.font = '10px sans-serif';
+            ctx.textAlign = 'center';
+            for (let i = 0; i <= 4; i++) {
+                const x = (i / 4) * width;
+                const timeLabel = i - delayAmount;
+                const labelText = timeLabel >= 0 ? `${timeLabel.toFixed(1)}s` : `${timeLabel.toFixed(1)}s`;
+                ctx.fillText(labelText, x, height - 5);
+            }
+
+            // Signal
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 2.5;
+            ctx.beginPath();
+
+            let peakX = -1;
+            let peakY = height/2;
+
+            for (let x = 0; x < width; x++) {
+                const t = (x / width) * 4 - delayAmount;
+
+                // Characteristic pulse: starts at t=0
+                let val = 0;
+                if (t >= 0) {
+                    val = Math.exp(-t * 1.2) * Math.sin(5 * t);
+                }
+
+                if (isOutput) {
+                    val = val * val; // Square the signal for output
+                }
+
+                const y = height/2 - (val * (height/2 * 0.85));
+
+                // Track peak position (first peak around t=0.6)
+                if (t >= 0 && Math.abs(t - 0.6) < 0.03) {
+                    peakX = x;
+                    peakY = y;
+                }
+
+                if (x === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+            }
+
+            ctx.stroke();
+
+            // Draw marker at characteristic point
+            if (peakX >= 0 && peakX <= width) {
+                ctx.fillStyle = color;
+                ctx.beginPath();
+                ctx.arc(peakX, peakY, 5, 0, 2 * Math.PI);
+                ctx.fill();
+
+                // Vertical line from peak to axis
+                ctx.strokeStyle = color;
+                ctx.lineWidth = 1;
+                ctx.setLineDash([4, 4]);
+                ctx.beginPath();
+                ctx.moveTo(peakX, peakY);
+                ctx.lineTo(peakX, height/2);
+                ctx.stroke();
+                ctx.setLineDash([]);
+            }
+        }
+
+        function draw() {
+            // Original signals (no delay)
+            drawSignal(contexts.inputOriginal, 0, false, '#2196F3');
+            drawSignal(contexts.outputOriginal, 0, true, '#F44336');
+
+            // Delayed signals
+            drawSignal(contexts.inputDelayed, delay, false, '#2196F3');
+            drawSignal(contexts.outputDelayed, delay, true, '#F44336');
+        }
+
+        draw();
+    </script>
+</body>
+</html>

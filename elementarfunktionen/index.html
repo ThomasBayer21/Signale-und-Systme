@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analoge Elementarfunktionen</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 2.2em;
+            font-weight: 600;
+        }
+        .subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            margin-bottom: 40px;
+            font-size: 1.1em;
+        }
+        .container {
+            background: white;
+            border-radius: 8px;
+            padding: 40px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .intro {
+            background: #ecf0f1;
+            padding: 20px;
+            border-radius: 6px;
+            margin-bottom: 35px;
+            border-left: 4px solid #3498db;
+            line-height: 1.6;
+            color: #555;
+        }
+        .visualizations {
+            display: grid;
+            gap: 20px;
+        }
+        .viz-card {
+            background: #fafafa;
+            padding: 25px;
+            border-radius: 6px;
+            border-left: 4px solid #3498db;
+            transition: transform 0.2s, box-shadow 0.2s;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+        .viz-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+        }
+        .viz-card.step {
+            border-left-color: #3498db;
+        }
+        .viz-card.rect {
+            border-left-color: #27ae60;
+        }
+        .viz-card.triangle {
+            border-left-color: #9b59b6;
+        }
+        .viz-card.sinc {
+            border-left-color: #e67e22;
+        }
+        .viz-card.dirac {
+            border-left-color: #e74c3c;
+        }
+        .viz-card.exponential {
+            border-left-color: #16a085;
+        }
+        .viz-card.cosine {
+            border-left-color: #f39c12;
+        }
+        .viz-card.complex {
+            border-left-color: #9b59b6;
+        }
+        .viz-title {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        .viz-subtitle {
+            font-size: 0.95em;
+            color: #7f8c8d;
+            margin-bottom: 12px;
+            font-style: italic;
+        }
+        .viz-description {
+            color: #555;
+            line-height: 1.6;
+            font-size: 0.95em;
+        }
+        .properties {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 6px;
+            margin-top: 35px;
+            border: 1px solid #ddd;
+        }
+        .properties h3 {
+            color: #2c3e50;
+            margin: 0 0 15px 0;
+            font-size: 1.1em;
+        }
+        .properties ul {
+            margin: 0;
+            padding-left: 25px;
+        }
+        .properties li {
+            color: #555;
+            line-height: 1.8;
+            margin: 8px 0;
+        }
+        .properties strong {
+            color: #2c3e50;
+        }
+        .back-link {
+            text-align: center;
+            margin-top: 30px;
+        }
+        .back-link a {
+            color: #3498db;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .back-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <h1>Analoge Elementarfunktionen</h1>
+    <div class="subtitle">Interaktive Visualisierungen der fundamentalen Signale</div>
+
+    <div class="container">
+        <div class="intro">
+            Elementarfunktionen sind die Bausteine der Signalverarbeitung. Komplexe Signale können
+            oft als Überlagerung oder Transformation dieser fundamentalen Funktionen dargestellt werden.
+            Die folgenden acht Visualisierungen zeigen die wichtigsten Elementarfunktionen mit ihren
+            charakteristischen Eigenschaften.
+        </div>
+
+        <div class="visualizations">
+            <a href="sprungfunktion.html" class="viz-card step">
+                <div class="viz-title">Sprungfunktion</div>
+                <div class="viz-subtitle">u(t) oder σ(t) - Unit Step Function</div>
+                <div class="viz-description">
+                    Die Heaviside-Funktion beschreibt einen idealen, instantanen Übergang von 0 auf 1.
+                    Sie ist fundamental für die Beschreibung von Schaltvorgängen und dient als
+                    Basisfunktion für viele andere Signale. Ihre Ableitung ist der Dirac-Impuls.
+                </div>
+            </a>
+
+            <a href="rechteckfunktion.html" class="viz-card rect">
+                <div class="viz-title">Rechteckfunktion</div>
+                <div class="viz-subtitle">rect(t/T) - Rectangular Pulse</div>
+                <div class="viz-description">
+                    Die Rechteckfunktion ist ein zeitlich begrenzter Puls mit konstanter Amplitude.
+                    Sie wird zur Fensterung und Modulation verwendet. Ihre Fourier-Transformierte
+                    ist die Sinc-Funktion, was sie zentral für die Spektralanalyse macht.
+                </div>
+            </a>
+
+            <a href="dreieckfunktion.html" class="viz-card triangle">
+                <div class="viz-title">Dreieckfunktion</div>
+                <div class="viz-subtitle">tri(t/T) - Triangular Function</div>
+                <div class="viz-description">
+                    Die Dreieckfunktion ist eine stetige Funktion mit linearen Flanken.
+                    Sie entsteht durch Faltung zweier Rechteckfunktionen und wird für
+                    Interpolation und als sanftere Alternative zur Rechteckfensterung verwendet.
+                </div>
+            </a>
+
+            <a href="cosinus_signal.html" class="viz-card cosine">
+                <div class="viz-title">Cosinusförmige Signale</div>
+                <div class="viz-subtitle">cos(ωt + φ) - Cosine Function</div>
+                <div class="viz-description">
+                    Der Cosinus ist ein um π/2 phasenverschobener Sinus und beschreibt harmonische
+                    Schwingungen. Mit Amplitude, Frequenz und Phase lassen sich beliebige periodische
+                    Signale darstellen. Fundamentales Signal für Fourier-Analyse und Schwingungslehre.
+                </div>
+            </a>
+
+            <a href="komplexer_drehzeiger.html" class="viz-card complex">
+                <div class="viz-title">Komplexer Drehzeiger</div>
+                <div class="viz-subtitle">e^(jωt) - Complex Exponential</div>
+                <div class="viz-description">
+                    Die Euler'sche Formel e^(jωt) = cos(ωt) + j·sin(ωt) verbindet Exponentialfunktion
+                    mit trigonometrischen Funktionen. Der Drehzeiger rotiert in der komplexen Ebene,
+                    seine Projektionen ergeben Sinus und Cosinus. Zentral für komplexe Signaldarstellung.
+                </div>
+            </a>
+
+            <a href="sinc_funktion.html" class="viz-card sinc">
+                <div class="viz-title">Sinc-Funktion</div>
+                <div class="viz-subtitle">sinc(t) = sin(πt)/(πt)</div>
+                <div class="viz-description">
+                    Die Sinc-Funktion ist die Fourier-Transformierte der Rechteckfunktion.
+                    Sie ist zentral für das Abtasttheorem und die ideale Signalrekonstruktion.
+                    Ihre Nullstellen liegen bei allen ganzzahligen Werten außer Null.
+                </div>
+            </a>
+
+            <a href="dirac_impuls.html" class="viz-card dirac">
+                <div class="viz-title">Dirac-Impuls</div>
+                <div class="viz-subtitle">δ(t) - Dirac Delta Distribution</div>
+                <div class="viz-description">
+                    Der Dirac-Impuls ist eine Distribution mit unendlicher Höhe, infinitesimaler
+                    Breite und Fläche 1. Er ist die Ableitung der Sprungfunktion und besitzt die
+                    wichtige Ausblendeigenschaft. Sein Spektrum ist konstant über alle Frequenzen.
+                </div>
+            </a>
+
+            <a href="exponentialfunktion.html" class="viz-card exponential">
+                <div class="viz-title">Exponentialfunktion</div>
+                <div class="viz-subtitle">e^(at)·u(t) - Causal Exponential</div>
+                <div class="viz-description">
+                    Die kausale Exponentialfunktion beschreibt abklingende (a < 0) oder ansteigende
+                    (a > 0) Prozesse. Sie ist die Lösung vieler Differentialgleichungen erster Ordnung
+                    und beschreibt RC-Glieder, Relaxationsprozesse und Systemantworten.
+                </div>
+            </a>
+        </div>
+
+        <div class="properties">
+            <h3>Wichtige Zusammenhänge</h3>
+            <ul>
+                <li><strong>Ableitung:</strong> δ(t) = d/dt[u(t)] - Dirac ist Ableitung der Sprungfunktion</li>
+                <li><strong>Faltung:</strong> tri(t) = rect(t) * rect(t) - Dreieck ist Faltung zweier Rechtecke</li>
+                <li><strong>Fourier-Paare:</strong> rect(t) ↔ sinc(ω) und δ(t) ↔ 1</li>
+                <li><strong>Phasenbeziehung:</strong> cos(t) = sin(t + π/2) - Cosinus ist phasenverschobener Sinus</li>
+                <li><strong>Euler-Formel:</strong> e^(jωt) = cos(ωt) + j·sin(ωt) - Verbindung zwischen Real- und Imaginärteil</li>
+                <li><strong>Abtastung:</strong> Multiplikation mit Dirac-Kamm führt zu diskreten Abtastwerten</li>
+                <li><strong>Systemantwort:</strong> Exponentialfunktionen sind Eigenfunktionen linearer Systeme</li>
+            </ul>
+        </div>
+
+        <div class="back-link">
+            <a href="../index.html">← Zurück zur Übersicht</a>
+        </div>
+    </div>
+</body>
+</html>

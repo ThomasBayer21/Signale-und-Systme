@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Überlagerungsprinzip (Superposition)</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1100px;
+            margin: 40px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 2em;
+            font-weight: 600;
+        }
+        .description {
+            text-align: center;
+            color: #555;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+        .container {
+            background: white;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .info-box {
+            background: #ecf0f1;
+            padding: 20px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            border-left: 4px solid #3498db;
+        }
+        .info-box h3 {
+            margin: 0 0 10px 0;
+            font-size: 1.1em;
+            color: #2c3e50;
+        }
+        .info-box p {
+            margin: 5px 0;
+            color: #555;
+            line-height: 1.5;
+        }
+        .equation {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 6px;
+            text-align: center;
+            font-family: 'Courier New', monospace;
+            font-size: 1.2em;
+            margin: 20px 0;
+            color: #2c3e50;
+            border: 1px solid #ddd;
+        }
+        .controls {
+            display: flex;
+            gap: 25px;
+            justify-content: center;
+            margin: 25px 0;
+            flex-wrap: wrap;
+            padding: 20px;
+            background: #fafafa;
+            border-radius: 6px;
+            border: 1px solid #e0e0e0;
+        }
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            min-width: 180px;
+        }
+        .control-group label {
+            font-size: 14px;
+            color: #555;
+            font-weight: 500;
+        }
+        .value-display {
+            font-size: 1.1em;
+            color: #3498db;
+            font-weight: 600;
+        }
+        input[type="range"] {
+            width: 100%;
+            height: 4px;
+            border-radius: 2px;
+            background: #ddd;
+            outline: none;
+            -webkit-appearance: none;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #3498db;
+            cursor: pointer;
+        }
+        input[type="range"]::-moz-range-thumb {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #3498db;
+            cursor: pointer;
+            border: none;
+        }
+        .demo-section {
+            margin: 30px 0;
+        }
+        .signal-row {
+            display: flex;
+            align-items: center;
+            margin: 20px 0;
+            gap: 15px;
+            padding: 15px;
+            background: #fafafa;
+            border-radius: 6px;
+        }
+        .signal-row.sum-row {
+            background: #fff8f0;
+            border: 2px solid #ff9800;
+        }
+        .signal-box {
+            flex: 1;
+            text-align: center;
+        }
+        .signal-label {
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: #555;
+            font-size: 14px;
+        }
+        canvas {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background: white;
+        }
+        .operator {
+            font-size: 24px;
+            font-weight: bold;
+            color: #7f8c8d;
+            min-width: 30px;
+            text-align: center;
+        }
+        .plus-operator {
+            text-align: center;
+            display: block;
+            margin: 15px 0;
+            font-size: 28px;
+            color: #7f8c8d;
+            font-weight: bold;
+        }
+        .system-box {
+            background: #ecf0f1;
+            padding: 20px;
+            border-radius: 6px;
+            text-align: center;
+            font-weight: 500;
+            color: #2c3e50;
+            min-width: 120px;
+            border: 1px solid #bdc3c7;
+        }
+        .system-box small {
+            display: block;
+            font-size: 0.85em;
+            margin-top: 5px;
+            color: #7f8c8d;
+        }
+        .legend {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin: 20px 0;
+            padding: 15px;
+            background: #fafafa;
+            border-radius: 6px;
+            border: 1px solid #e0e0e0;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .legend-color {
+            width: 30px;
+            height: 3px;
+            border-radius: 2px;
+        }
+        .verification {
+            background: #f0f8f0;
+            padding: 15px;
+            border-radius: 6px;
+            text-align: center;
+            margin: 20px 0;
+            border: 1px solid #4caf50;
+        }
+        .verification h4 {
+            color: #2e7d32;
+            margin: 0 0 10px 0;
+            font-weight: 500;
+        }
+        .verification p {
+            margin: 5px 0;
+            color: #555;
+            line-height: 1.5;
+        }
+        .play-button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 500;
+            margin: 10px auto;
+            display: block;
+        }
+        .play-button:hover {
+            background: #2980b9;
+        }
+    </style>
+</head>
+<body>
+    <h1>Überlagerungsprinzip</h1>
+    <div class="description">Kernprinzip linearer Systeme: Die Summe der Ausgänge = Ausgang der Summe</div>
+
+    <div class="container">
+        <div class="info-box">
+            <h3>Anleitung</h3>
+            <p>Passe die Amplituden und den Systemfaktor an und beobachte:</p>
+            <p>Die untere Zeile (oranges Signal) zeigt, dass beide Wege zum gleichen Ergebnis führen.</p>
+        </div>
+
+        <div class="equation">
+            T{α·x₁(t) + β·x₂(t)} = α·y₁(t) + β·y₂(t)
+        </div>
+
+        <div class="controls">
+            <div class="control-group">
+                <label>Amplitude Signal 1: <span class="value-display" id="amp1-value">1.0</span></label>
+                <input type="range" id="amp1" min="0" max="2" step="0.1" value="1">
+            </div>
+            <div class="control-group">
+                <label>Amplitude Signal 2: <span class="value-display" id="amp2-value">0.5</span></label>
+                <input type="range" id="amp2" min="0" max="2" step="0.1" value="0.5">
+            </div>
+            <div class="control-group">
+                <label>Systemfaktor (Verstärkung): <span class="value-display" id="gain-value">2.0</span></label>
+                <input type="range" id="gain" min="0.5" max="4" step="0.1" value="2">
+            </div>
+        </div>
+
+        <button class="play-button" id="animate-btn">Animation starten</button>
+
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-color" style="background: #2196F3;"></div>
+                <span>Signal 1 (niedrige Frequenz)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #4CAF50;"></div>
+                <span>Signal 2 (hohe Frequenz)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #FF9800;"></div>
+                <span>Überlagerung (Summe)</span>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <div class="signal-row">
+                <div class="signal-box">
+                    <div class="signal-label">Eingang x₁(t)</div>
+                    <canvas id="input1" width="220" height="100"></canvas>
+                </div>
+                <div class="operator">→</div>
+                <div class="system-box">
+                    System T
+                    <small>y = g·x</small>
+                </div>
+                <div class="operator">→</div>
+                <div class="signal-box">
+                    <div class="signal-label">Ausgang y₁(t)</div>
+                    <canvas id="output1" width="220" height="100"></canvas>
+                </div>
+            </div>
+
+            <div class="signal-row">
+                <div class="signal-box">
+                    <div class="signal-label">Eingang x₂(t)</div>
+                    <canvas id="input2" width="220" height="100"></canvas>
+                </div>
+                <div class="operator">→</div>
+                <div class="system-box">
+                    System T
+                    <small>y = g·x</small>
+                </div>
+                <div class="operator">→</div>
+                <div class="signal-box">
+                    <div class="signal-label">Ausgang y₂(t)</div>
+                    <canvas id="output2" width="220" height="100"></canvas>
+                </div>
+            </div>
+
+            <div class="plus-operator">+</div>
+
+            <div class="signal-row sum-row">
+                <div class="signal-box">
+                    <div class="signal-label">Summe der Eingänge<br>x₁(t) + x₂(t)</div>
+                    <canvas id="input-sum" width="220" height="100"></canvas>
+                </div>
+                <div class="operator">→</div>
+                <div class="system-box">
+                    System T
+                    <small>y = g·x</small>
+                </div>
+                <div class="operator">→</div>
+                <div class="signal-box">
+                    <div class="signal-label">Summe der Ausgänge<br>y₁(t) + y₂(t)</div>
+                    <canvas id="output-sum" width="220" height="100"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="verification">
+            <h4>Verifikation: Superposition erfüllt</h4>
+            <p>Das orange Signal unten rechts ist identisch mit der Summe der beiden blauen/grünen Ausgangssignale.</p>
+            <p>Das beweist: Dieses System ist linear.</p>
+        </div>
+    </div>
+
+    <script>
+        const canvases = {
+            input1: document.getElementById('input1'),
+            output1: document.getElementById('output1'),
+            input2: document.getElementById('input2'),
+            output2: document.getElementById('output2'),
+            inputSum: document.getElementById('input-sum'),
+            outputSum: document.getElementById('output-sum')
+        };
+
+        const contexts = {};
+        for (let key in canvases) {
+            contexts[key] = canvases[key].getContext('2d');
+        }
+
+        let amp1 = 1.0;
+        let amp2 = 0.5;
+        let gain = 2.0;
+        let phase = 0;
+        let isAnimating = false;
+        let animationId = null;
+
+        document.getElementById('amp1').addEventListener('input', (e) => {
+            amp1 = parseFloat(e.target.value);
+            document.getElementById('amp1-value').textContent = amp1.toFixed(1);
+            draw();
+        });
+
+        document.getElementById('amp2').addEventListener('input', (e) => {
+            amp2 = parseFloat(e.target.value);
+            document.getElementById('amp2-value').textContent = amp2.toFixed(1);
+            draw();
+        });
+
+        document.getElementById('gain').addEventListener('input', (e) => {
+            gain = parseFloat(e.target.value);
+            document.getElementById('gain-value').textContent = gain.toFixed(1);
+            draw();
+        });
+
+        document.getElementById('animate-btn').addEventListener('click', () => {
+            isAnimating = !isAnimating;
+            const btn = document.getElementById('animate-btn');
+            if (isAnimating) {
+                btn.textContent = 'Animation stoppen';
+                animate();
+            } else {
+                btn.textContent = 'Animation starten';
+                if (animationId) cancelAnimationFrame(animationId);
+            }
+        });
+
+        function drawSignal(ctx, amplitude, color, frequency, showPhase = false) {
+            const width = ctx.canvas.width;
+            const height = ctx.canvas.height;
+
+            ctx.clearRect(0, 0, width, height);
+
+            // Grid
+            ctx.strokeStyle = '#f0f0f0';
+            ctx.lineWidth = 1;
+            for (let i = 0; i <= 4; i++) {
+                ctx.beginPath();
+                ctx.moveTo((i * width) / 4, 0);
+                ctx.lineTo((i * width) / 4, height);
+                ctx.stroke();
+            }
+            ctx.beginPath();
+            ctx.moveTo(0, height/2);
+            ctx.lineTo(width, height/2);
+            ctx.stroke();
+
+            // Signal
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+
+            for (let x = 0; x < width; x++) {
+                const t = (x / width) * 6 + (showPhase ? phase : 0);
+                const y = height/2 - (amplitude * Math.sin(frequency * Math.PI * t) * (height/2 * 0.75));
+
+                if (x === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+            }
+
+            ctx.stroke();
+        }
+
+        function drawCombinedSignal(ctx, a1, a2, scale, color, showPhase = false) {
+            const width = ctx.canvas.width;
+            const height = ctx.canvas.height;
+
+            ctx.clearRect(0, 0, width, height);
+
+            // Grid
+            ctx.strokeStyle = '#f0f0f0';
+            ctx.lineWidth = 1;
+            for (let i = 0; i <= 4; i++) {
+                ctx.beginPath();
+                ctx.moveTo((i * width) / 4, 0);
+                ctx.lineTo((i * width) / 4, height);
+                ctx.stroke();
+            }
+            ctx.beginPath();
+            ctx.moveTo(0, height/2);
+            ctx.lineTo(width, height/2);
+            ctx.stroke();
+
+            // Combined signal
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+
+            for (let x = 0; x < width; x++) {
+                const t = (x / width) * 6 + (showPhase ? phase : 0);
+                const val = a1 * Math.sin(0.5 * Math.PI * t) + a2 * Math.sin(3 * Math.PI * t);
+                const y = height/2 - (val * scale * (height/2 * 0.75));
+
+                if (x === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+            }
+
+            ctx.stroke();
+        }
+
+        function draw() {
+            // Input signals
+            drawSignal(contexts.input1, amp1, '#2196F3', 0.5, isAnimating);
+            drawSignal(contexts.input2, amp2, '#4CAF50', 3, isAnimating);
+
+            // Output signals (with gain)
+            drawSignal(contexts.output1, amp1 * gain, '#2196F3', 0.5, isAnimating);
+            drawSignal(contexts.output2, amp2 * gain, '#4CAF50', 3, isAnimating);
+
+            // Sum of inputs
+            drawCombinedSignal(contexts.inputSum, amp1, amp2, 1, '#FF9800', isAnimating);
+
+            // Sum of outputs
+            drawCombinedSignal(contexts.outputSum, amp1, amp2, gain, '#FF9800', isAnimating);
+        }
+
+        function animate() {
+            if (!isAnimating) return;
+            phase += 0.05;
+            draw();
+            animationId = requestAnimationFrame(animate);
+        }
+
+        draw();
+    </script>
+</body>
+</html>

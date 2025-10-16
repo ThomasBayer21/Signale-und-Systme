@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rechteckfunktion</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 2em;
+            font-weight: 600;
+        }
+        .description {
+            text-align: center;
+            color: #555;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+        .container {
+            background: white;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .info-box {
+            background: #ecf0f1;
+            padding: 20px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            border-left: 4px solid #27ae60;
+        }
+        .info-box h3 {
+            margin: 0 0 10px 0;
+            font-size: 1.1em;
+            color: #2c3e50;
+        }
+        .info-box p {
+            margin: 5px 0;
+            color: #555;
+            line-height: 1.5;
+        }
+        .equation {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 6px;
+            text-align: center;
+            font-family: 'Courier New', monospace;
+            font-size: 1.2em;
+            margin: 20px 0;
+            color: #2c3e50;
+            border: 1px solid #ddd;
+        }
+        .controls {
+            display: flex;
+            gap: 25px;
+            justify-content: center;
+            margin: 25px 0;
+            flex-wrap: wrap;
+            padding: 20px;
+            background: #fafafa;
+            border-radius: 6px;
+            border: 1px solid #e0e0e0;
+        }
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            min-width: 200px;
+        }
+        .control-group label {
+            font-size: 14px;
+            color: #555;
+            font-weight: 500;
+            text-align: center;
+        }
+        .value-display {
+            font-size: 1.1em;
+            color: #27ae60;
+            font-weight: 600;
+        }
+        input[type="range"] {
+            width: 100%;
+            height: 4px;
+            border-radius: 2px;
+            background: #ddd;
+            outline: none;
+            -webkit-appearance: none;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #27ae60;
+            cursor: pointer;
+        }
+        input[type="range"]::-moz-range-thumb {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #27ae60;
+            cursor: pointer;
+            border: none;
+        }
+        canvas {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background: white;
+            display: block;
+            margin: 20px auto;
+        }
+        .properties {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 6px;
+            margin-top: 25px;
+            border: 1px solid #ddd;
+        }
+        .properties h3 {
+            color: #2c3e50;
+            margin: 0 0 15px 0;
+            font-size: 1.1em;
+        }
+        .properties ul {
+            margin: 0;
+            padding-left: 25px;
+        }
+        .properties li {
+            color: #555;
+            line-height: 1.8;
+            margin: 8px 0;
+        }
+        .properties strong {
+            color: #2c3e50;
+        }
+    </style>
+</head>
+<body>
+    <h1>Rechteckfunktion</h1>
+    <div class="description">rect(t/T) - Rectangular Pulse Function</div>
+
+    <div class="container">
+        <div class="info-box">
+            <h3>Beschreibung</h3>
+            <p>Die Rechteckfunktion ist ein fundamentaler Puls in der Signalverarbeitung.</p>
+            <p>Sie wird oft für Fensterung und Modulation verwendet.</p>
+        </div>
+
+        <div class="equation">
+            rect(t/T) = { 1 für |t| < T/2,  0 für |t| ≥ T/2 }
+        </div>
+
+        <div class="controls">
+            <div class="control-group">
+                <label>Pulsbreite T: <span class="value-display" id="width-value">2.0</span> s</label>
+                <input type="range" id="width" min="0.5" max="8" step="0.1" value="2">
+            </div>
+            <div class="control-group">
+                <label>Zeitverschiebung t₀: <span class="value-display" id="shift-value">0.0</span> s</label>
+                <input type="range" id="shift" min="-5" max="5" step="0.1" value="0">
+            </div>
+            <div class="control-group">
+                <label>Amplitude A: <span class="value-display" id="amplitude-value">1.0</span></label>
+                <input type="range" id="amplitude" min="0.1" max="2" step="0.1" value="1">
+            </div>
+        </div>
+
+        <canvas id="canvas" width="800" height="300"></canvas>
+
+        <div class="properties">
+            <h3>Eigenschaften der Rechteckfunktion</h3>
+            <ul>
+                <li><strong>Symmetrie:</strong> Gerade Funktion (rect(-t) = rect(t))</li>
+                <li><strong>Normierung:</strong> Fläche = T (bei Amplitude 1)</li>
+                <li><strong>Fourier-Transformation:</strong> F{rect(t/T)} = T·sinc(ωT/2π)</li>
+                <li><strong>Beziehung zu Sprungfunktion:</strong> rect(t) = u(t+1/2) - u(t-1/2)</li>
+                <li><strong>Anwendung:</strong> Fensterung, Zeitbegrenzung, Abtastung</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+
+        let width_param = 2;
+        let shift = 0;
+        let amplitude = 1;
+
+        document.getElementById('width').addEventListener('input', (e) => {
+            width_param = parseFloat(e.target.value);
+            document.getElementById('width-value').textContent = width_param.toFixed(1);
+            draw();
+        });
+
+        document.getElementById('shift').addEventListener('input', (e) => {
+            shift = parseFloat(e.target.value);
+            document.getElementById('shift-value').textContent = shift.toFixed(1);
+            draw();
+        });
+
+        document.getElementById('amplitude').addEventListener('input', (e) => {
+            amplitude = parseFloat(e.target.value);
+            document.getElementById('amplitude-value').textContent = amplitude.toFixed(1);
+            draw();
+        });
+
+        function rectFunction(t, t0, T, A) {
+            const tShifted = t - t0;
+            return Math.abs(tShifted) < T / 2 ? A : 0;
+        }
+
+        function draw() {
+            const width = canvas.width;
+            const height = canvas.height;
+            const centerY = height / 2;
+            const timeRange = 10;
+
+            ctx.clearRect(0, 0, width, height);
+
+            // Grid
+            ctx.strokeStyle = '#f0f0f0';
+            ctx.lineWidth = 1;
+
+            for (let i = 0; i <= 4; i++) {
+                const y = (i / 4) * height;
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(width, y);
+                ctx.stroke();
+            }
+
+            for (let i = 0; i <= 10; i++) {
+                const x = (i / 10) * width;
+                ctx.beginPath();
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x, height);
+                ctx.stroke();
+            }
+
+            // Axes
+            ctx.strokeStyle = '#333';
+            ctx.lineWidth = 2;
+
+            ctx.beginPath();
+            ctx.moveTo(0, centerY);
+            ctx.lineTo(width, centerY);
+            ctx.stroke();
+
+            const zeroX = width / 2;
+            ctx.beginPath();
+            ctx.moveTo(zeroX, 0);
+            ctx.lineTo(zeroX, height);
+            ctx.stroke();
+
+            // Labels
+            ctx.fillStyle = '#666';
+            ctx.font = '12px sans-serif';
+            ctx.textAlign = 'center';
+            for (let t = -5; t <= 5; t += 1) {
+                const x = ((t + 5) / timeRange) * width;
+                ctx.fillText(`${t}`, x, centerY + 20);
+            }
+
+            ctx.textAlign = 'right';
+            ctx.textBaseline = 'middle';
+            for (let a = 0; a <= 2; a += 0.5) {
+                const y = centerY - (a / 2) * (centerY * 0.8);
+                ctx.fillText(a.toFixed(1), zeroX - 10, y);
+            }
+
+            // Draw rectangle function
+            ctx.strokeStyle = '#27ae60';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+
+            let prevVal = null;
+            for (let x = 0; x <= width; x++) {
+                const t = ((x / width) * timeRange) - 5;
+                const val = rectFunction(t, shift, width_param, amplitude);
+                const y = centerY - (val / 2) * (centerY * 0.8);
+
+                if (x === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    if (prevVal !== null && Math.abs(val - prevVal) > 0.01) {
+                        ctx.lineTo(x, centerY - (prevVal / 2) * (centerY * 0.8));
+                        ctx.moveTo(x, y);
+                    } else {
+                        ctx.lineTo(x, y);
+                    }
+                }
+                prevVal = val;
+            }
+
+            ctx.stroke();
+
+            // Mark pulse edges
+            const leftEdge = shift - width_param / 2;
+            const rightEdge = shift + width_param / 2;
+
+            const leftX = ((leftEdge + 5) / timeRange) * width;
+            const rightX = ((rightEdge + 5) / timeRange) * width;
+            const pulseY = centerY - (amplitude / 2) * (centerY * 0.8);
+
+            // Dashed lines at edges
+            ctx.strokeStyle = '#e74c3c';
+            ctx.lineWidth = 2;
+            ctx.setLineDash([5, 5]);
+
+            if (leftX >= 0 && leftX <= width) {
+                ctx.beginPath();
+                ctx.moveTo(leftX, centerY);
+                ctx.lineTo(leftX, pulseY);
+                ctx.stroke();
+            }
+
+            if (rightX >= 0 && rightX <= width) {
+                ctx.beginPath();
+                ctx.moveTo(rightX, centerY);
+                ctx.lineTo(rightX, pulseY);
+                ctx.stroke();
+            }
+
+            ctx.setLineDash([]);
+
+            // Width indicator
+            if (leftX >= 0 && rightX <= width) {
+                ctx.strokeStyle = '#e74c3c';
+                ctx.fillStyle = '#e74c3c';
+                ctx.lineWidth = 2;
+
+                const indicatorY = pulseY - 30;
+                ctx.beginPath();
+                ctx.moveTo(leftX, indicatorY);
+                ctx.lineTo(rightX, indicatorY);
+                ctx.stroke();
+
+                // Arrows
+                ctx.beginPath();
+                ctx.moveTo(leftX, indicatorY);
+                ctx.lineTo(leftX + 10, indicatorY - 5);
+                ctx.lineTo(leftX + 10, indicatorY + 5);
+                ctx.closePath();
+                ctx.fill();
+
+                ctx.beginPath();
+                ctx.moveTo(rightX, indicatorY);
+                ctx.lineTo(rightX - 10, indicatorY - 5);
+                ctx.lineTo(rightX - 10, indicatorY + 5);
+                ctx.closePath();
+                ctx.fill();
+
+                // Width label
+                ctx.font = 'bold 14px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText(`T = ${width_param.toFixed(1)}`, (leftX + rightX) / 2, indicatorY - 15);
+            }
+        }
+
+        draw();
+    </script>
+</body>
+</html>
