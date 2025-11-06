@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Abtastung und Rekonstruktion</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #d4e8e8 0%, #bcd4d4 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        .canvas-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .canvas-wrapper {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .canvas-wrapper.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .canvas-wrapper h2 {
+            color: #444;
+            margin-bottom: 10px;
+            font-size: 1.3em;
+            text-align: center;
+        }
+
+        .canvas-description {
+            text-align: center;
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+        }
+
+        canvas {
+            display: block;
+            width: 100%;
+            height: auto;
+            border-radius: 5px;
+            background: white;
+        }
+
+        .controls {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .controls h3 {
+            color: #444;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+        .control-group {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .control-row {
+            display: grid;
+            grid-template-columns: 200px 1fr 100px;
+            gap: 15px;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .control-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .control-label {
+            font-weight: bold;
+            color: #333;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: #ddd;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #11998e;
+            cursor: pointer;
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #11998e;
+            cursor: pointer;
+            border: none;
+        }
+
+        .value-display {
+            color: #11998e;
+            font-weight: bold;
+            text-align: right;
+        }
+
+        .preset-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .preset-btn {
+            padding: 10px 20px;
+            border: 2px solid #11998e;
+            background: white;
+            color: #11998e;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .preset-btn:hover {
+            background: #11998e;
+            color: white;
+        }
+
+        .info-box {
+            background: #e7f3ff;
+            border-left: 4px solid #2196F3;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+
+        .info-box p {
+            color: #333;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .info-box p:last-child {
+            margin-bottom: 0;
+        }
+
+        .warning-box {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 10px;
+            display: none;
+        }
+
+        .warning-box.show {
+            display: block;
+        }
+
+        .warning-box p {
+            color: #856404;
+            font-weight: bold;
+            margin: 0;
+        }
+
+        .legend {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9em;
+        }
+
+        .legend-color {
+            width: 30px;
+            height: 3px;
+            border-radius: 2px;
+        }
+
+        .legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        @media (max-width: 1200px) {
+            .canvas-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .control-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Abtastung und Rekonstruktion</h1>
+        <p class="subtitle">Vom kontinuierlichen Signal zum digitalen Signal und zurück</p>
+
+        <div class="preset-buttons">
+            <button class="preset-btn" onclick="setPreset('sine')">Einfache Sinuswelle</button>
+            <button class="preset-btn" onclick="setPreset('complex')">Komplexes Signal</button>
+            <button class="preset-btn" onclick="setPreset('square')">Rechtecksignal</button>
+            <button class="preset-btn" onclick="setPreset('sawtooth')">Sägezahn</button>
+            <button class="preset-btn" onclick="setPreset('lowsampling')">Unterabtastung (Aliasing)</button>
+        </div>
+
+        <div class="controls">
+            <h3>Signal- und Abtastparameter</h3>
+            <div class="control-group">
+                <div class="control-row">
+                    <label class="control-label">Signalfrequenz (Hz):</label>
+                    <input type="range" id="freqSlider" min="0.5" max="10" step="0.5" value="2">
+                    <span class="value-display" id="freqValue">2.0 Hz</span>
+                </div>
+                <div class="control-row">
+                    <label class="control-label">Abtastrate (Hz):</label>
+                    <input type="range" id="samplingSlider" min="2" max="50" step="1" value="20">
+                    <span class="value-display" id="samplingValue">20 Hz</span>
+                </div>
+                <div class="control-row">
+                    <label class="control-label">Signalamplitude:</label>
+                    <input type="range" id="amplitudeSlider" min="10" max="100" step="5" value="100">
+                    <span class="value-display" id="amplitudeValue">1.0</span>
+                </div>
+            </div>
+            <div id="warningBox" class="warning-box">
+                <p>⚠ Aliasing-Warnung: Abtastrate ist zu niedrig! (Nyquist-Theorem verletzt)</p>
+            </div>
+        </div>
+
+        <div class="canvas-grid">
+            <div class="canvas-wrapper full-width">
+                <h2>1. Originalsignal und Abtastung</h2>
+                <p class="canvas-description">Kontinuierliches Signal mit idealen Abtastpunkten (Dirac-Impulse)</p>
+                <canvas id="originalCanvas" width="1400" height="300"></canvas>
+                <div class="legend">
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #2196F3;"></div>
+                        <span>Kontinuierliches Signal</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-dot" style="background: #f44336;"></div>
+                        <span>Abtastpunkte</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="canvas-wrapper full-width">
+                <h2>2. Ideale Abtastung (Dirac-Impulse)</h2>
+                <p class="canvas-description">Amplitudenmodulierte Impulse an den Abtastzeitpunkten</p>
+                <canvas id="sampledCanvas" width="1400" height="300"></canvas>
+            </div>
+
+            <div class="canvas-wrapper">
+                <h2>3a. Ideale Rekonstruktion (sinc-Interpolation)</h2>
+                <p class="canvas-description">Theoretisch perfekte Rekonstruktion mit sinc-Funktion</p>
+                <canvas id="idealReconCanvas" width="650" height="300"></canvas>
+                <div class="legend">
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #2196F3; opacity: 0.3;"></div>
+                        <span>Original</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #4CAF50;"></div>
+                        <span>Rekonstruiert</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="canvas-wrapper">
+                <h2>3b. Sample-and-Hold Rekonstruktion</h2>
+                <p class="canvas-description">Praktische Rekonstruktion (Treppenfunktion)</p>
+                <canvas id="sahReconCanvas" width="650" height="300"></canvas>
+                <div class="legend">
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #2196F3; opacity: 0.3;"></div>
+                        <span>Original</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #FF9800;"></div>
+                        <span>Sample-and-Hold</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="info-box">
+            <p><strong>Was passiert hier?</strong></p>
+            <p><strong>1. Abtastung:</strong> Das kontinuierliche analoge Signal wird zu diskreten Zeitpunkten gemessen. Nach dem Nyquist-Shannon-Abtasttheorem muss die Abtastrate mindestens doppelt so hoch sein wie die höchste Frequenz im Signal.</p>
+            <p><strong>2. Ideale Rekonstruktion:</strong> Jeder Abtastpunkt wird mit einer sinc-Funktion gewichtet. Die Überlagerung aller sinc-Funktionen ergibt das perfekt rekonstruierte Signal (unter Nyquist-Bedingungen).</p>
+            <p><strong>3. Sample-and-Hold:</strong> In der Praxis wird oft eine einfachere Methode verwendet: Der Abtastwert wird bis zum nächsten Abtastzeitpunkt konstant gehalten (Treppenfunktion). Dies führt zu einer Verzerrung im Frequenzbereich.</p>
+            <p><strong>Aliasing:</strong> Wenn die Abtastrate zu niedrig ist (unterhalb der Nyquist-Rate), entsteht Aliasing - hohe Frequenzen werden als niedrigere Frequenzen fehlinterpretiert.</p>
+        </div>
+    </div>
+
+    <script>
+        // Canvas-Elemente
+        const originalCanvas = document.getElementById('originalCanvas');
+        const sampledCanvas = document.getElementById('sampledCanvas');
+        const idealReconCanvas = document.getElementById('idealReconCanvas');
+        const sahReconCanvas = document.getElementById('sahReconCanvas');
+
+        const originalCtx = originalCanvas.getContext('2d');
+        const sampledCtx = sampledCanvas.getContext('2d');
+        const idealReconCtx = idealReconCanvas.getContext('2d');
+        const sahReconCtx = sahReconCanvas.getContext('2d');
+
+        // Parameter
+        let signalFrequency = 2; // Hz
+        let samplingRate = 20; // Hz
+        let amplitude = 1.0;
+        let signalType = 'sine'; // sine, complex, square, sawtooth
+
+        const duration = 2; // Sekunden
+        const plotPoints = 2000; // Punkte für kontinuierliches Signal
+
+        // Slider Events
+        document.getElementById('freqSlider').addEventListener('input', (e) => {
+            signalFrequency = parseFloat(e.target.value);
+            document.getElementById('freqValue').textContent = signalFrequency.toFixed(1) + ' Hz';
+            update();
+        });
+
+        document.getElementById('samplingSlider').addEventListener('input', (e) => {
+            samplingRate = parseInt(e.target.value);
+            document.getElementById('samplingValue').textContent = samplingRate + ' Hz';
+            update();
+        });
+
+        document.getElementById('amplitudeSlider').addEventListener('input', (e) => {
+            amplitude = parseInt(e.target.value) / 100;
+            document.getElementById('amplitudeValue').textContent = amplitude.toFixed(1);
+            update();
+        });
+
+        // Signalgenerierung
+        function generateSignal(t) {
+            switch(signalType) {
+                case 'sine':
+                    return amplitude * Math.sin(2 * Math.PI * signalFrequency * t);
+
+                case 'complex':
+                    // Komplexes Signal: Grundfrequenz + 2. und 3. Harmonische
+                    return amplitude * (
+                        Math.sin(2 * Math.PI * signalFrequency * t) +
+                        0.5 * Math.sin(2 * Math.PI * signalFrequency * 2 * t) +
+                        0.3 * Math.sin(2 * Math.PI * signalFrequency * 3 * t)
+                    ) / 1.8; // Normalisierung
+
+                case 'square':
+                    // Rechtecksignal durch Fourier-Reihe (ungerade Harmonische)
+                    let square = 0;
+                    for (let k = 1; k <= 7; k += 2) {
+                        square += Math.sin(2 * Math.PI * signalFrequency * k * t) / k;
+                    }
+                    return amplitude * (4 / Math.PI) * square;
+
+                case 'sawtooth':
+                    // Sägezahnsignal
+                    const period = 1 / signalFrequency;
+                    const phase = (t % period) / period;
+                    return amplitude * (2 * phase - 1);
+
+                default:
+                    return amplitude * Math.sin(2 * Math.PI * signalFrequency * t);
+            }
+        }
+
+        // Abtastpunkte berechnen
+        function getSamples() {
+            const samples = [];
+            const samplePeriod = 1 / samplingRate;
+            const numSamples = Math.floor(duration * samplingRate);
+
+            for (let i = 0; i < numSamples; i++) {
+                const t = i * samplePeriod;
+                samples.push({
+                    time: t,
+                    value: generateSignal(t)
+                });
+            }
+
+            return samples;
+        }
+
+        // sinc-Funktion für ideale Rekonstruktion
+        function sinc(x) {
+            if (Math.abs(x) < 1e-10) return 1.0;
+            const px = Math.PI * x;
+            return Math.sin(px) / px;
+        }
+
+        // Ideale Rekonstruktion
+        function idealReconstruction(t, samples) {
+            let sum = 0;
+            const samplePeriod = 1 / samplingRate;
+
+            for (let i = 0; i < samples.length; i++) {
+                const ti = samples[i].time;
+                const si = samples[i].value;
+                sum += si * sinc((t - ti) * samplingRate);
+            }
+
+            return sum;
+        }
+
+        // Zeichnen-Hilfsfunktion
+        function setupCanvas(ctx, width, height) {
+            const padding = 50;
+
+            ctx.clearRect(0, 0, width, height);
+
+            // Achsen
+            ctx.strokeStyle = '#333';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(padding, padding);
+            ctx.lineTo(padding, height - padding);
+            ctx.lineTo(width - padding, height - padding);
+            ctx.stroke();
+
+            // Nulllinie
+            ctx.strokeStyle = '#ccc';
+            ctx.lineWidth = 1;
+            ctx.setLineDash([5, 5]);
+            ctx.beginPath();
+            ctx.moveTo(padding, height / 2);
+            ctx.lineTo(width - padding, height / 2);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            return { padding, plotWidth: width - 2 * padding, plotHeight: height - 2 * padding };
+        }
+
+        function drawAxesLabels(ctx, width, height, padding, timeRange) {
+            // Zeit-Label
+            ctx.fillStyle = '#333';
+            ctx.font = 'bold 12px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('Zeit (s)', width / 2, height - 10);
+
+            // Amplitude-Label
+            ctx.save();
+            ctx.translate(15, height / 2);
+            ctx.rotate(-Math.PI / 2);
+            ctx.fillText('Amplitude', 0, 0);
+            ctx.restore();
+
+            // Zeitmarkierungen
+            ctx.font = '11px Arial';
+            ctx.fillStyle = '#666';
+            for (let i = 0; i <= 4; i++) {
+                const t = (i / 4) * timeRange;
+                const x = padding + (i / 4) * (width - 2 * padding);
+                ctx.fillText(t.toFixed(2), x, height - padding + 20);
+            }
+        }
+
+        function timeToX(t, padding, plotWidth) {
+            return padding + (t / duration) * plotWidth;
+        }
+
+        function valueToY(value, height, plotHeight) {
+            // Dynamische maximale Amplitude basierend auf Signaltyp
+            let maxAmp = amplitude * 1.3;
+
+            if (signalType === 'complex') {
+                maxAmp = amplitude * 1.4;
+            } else if (signalType === 'square') {
+                maxAmp = amplitude * 1.3;
+            }
+
+            return height / 2 - (value / maxAmp) * (plotHeight / 2);
+        }
+
+        // 1. Originalsignal und Abtastpunkte zeichnen
+        function drawOriginalAndSamples() {
+            const width = originalCanvas.width;
+            const height = originalCanvas.height;
+            const { padding, plotWidth, plotHeight } = setupCanvas(originalCtx, width, height);
+
+            const samples = getSamples();
+
+            // Kontinuierliches Signal
+            originalCtx.strokeStyle = '#2196F3';
+            originalCtx.lineWidth = 2;
+            originalCtx.beginPath();
+
+            for (let i = 0; i < plotPoints; i++) {
+                const t = (i / plotPoints) * duration;
+                const value = generateSignal(t);
+                const x = timeToX(t, padding, plotWidth);
+                const y = valueToY(value, height, plotHeight);
+
+                if (i === 0) {
+                    originalCtx.moveTo(x, y);
+                } else {
+                    originalCtx.lineTo(x, y);
+                }
+            }
+
+            originalCtx.stroke();
+
+            // Abtastpunkte
+            originalCtx.fillStyle = '#f44336';
+            samples.forEach(sample => {
+                const x = timeToX(sample.time, padding, plotWidth);
+                const y = valueToY(sample.value, height, plotHeight);
+
+                originalCtx.beginPath();
+                originalCtx.arc(x, y, 5, 0, 2 * Math.PI);
+                originalCtx.fill();
+
+                // Vertikale Linie zum Abtastpunkt
+                originalCtx.strokeStyle = '#f44336';
+                originalCtx.lineWidth = 1;
+                originalCtx.setLineDash([3, 3]);
+                originalCtx.beginPath();
+                originalCtx.moveTo(x, height / 2);
+                originalCtx.lineTo(x, y);
+                originalCtx.stroke();
+                originalCtx.setLineDash([]);
+            });
+
+            drawAxesLabels(originalCtx, width, height, padding, duration);
+        }
+
+        // 2. Abgetastetes Signal (Dirac-Impulse)
+        function drawSampledSignal() {
+            const width = sampledCanvas.width;
+            const height = sampledCanvas.height;
+            const { padding, plotWidth, plotHeight } = setupCanvas(sampledCtx, width, height);
+
+            const samples = getSamples();
+
+            // Impulse als vertikale Linien
+            sampledCtx.strokeStyle = '#f44336';
+            sampledCtx.lineWidth = 3;
+
+            samples.forEach(sample => {
+                const x = timeToX(sample.time, padding, plotWidth);
+                const y0 = height / 2;
+                const y1 = valueToY(sample.value, height, plotHeight);
+
+                sampledCtx.beginPath();
+                sampledCtx.moveTo(x, y0);
+                sampledCtx.lineTo(x, y1);
+                sampledCtx.stroke();
+
+                // Pfeilspitze
+                sampledCtx.fillStyle = '#f44336';
+                sampledCtx.beginPath();
+                if (sample.value >= 0) {
+                    sampledCtx.moveTo(x, y1);
+                    sampledCtx.lineTo(x - 4, y1 + 8);
+                    sampledCtx.lineTo(x + 4, y1 + 8);
+                } else {
+                    sampledCtx.moveTo(x, y1);
+                    sampledCtx.lineTo(x - 4, y1 - 8);
+                    sampledCtx.lineTo(x + 4, y1 - 8);
+                }
+                sampledCtx.fill();
+            });
+
+            drawAxesLabels(sampledCtx, width, height, padding, duration);
+        }
+
+        // 3a. Ideale Rekonstruktion
+        function drawIdealReconstruction() {
+            const width = idealReconCanvas.width;
+            const height = idealReconCanvas.height;
+            const { padding, plotWidth, plotHeight } = setupCanvas(idealReconCtx, width, height);
+
+            const samples = getSamples();
+
+            // Original (transparent)
+            idealReconCtx.strokeStyle = 'rgba(33, 150, 243, 0.3)';
+            idealReconCtx.lineWidth = 2;
+            idealReconCtx.beginPath();
+
+            for (let i = 0; i < plotPoints; i++) {
+                const t = (i / plotPoints) * duration;
+                const value = generateSignal(t);
+                const x = timeToX(t, padding, plotWidth);
+                const y = valueToY(value, height, plotHeight);
+
+                if (i === 0) {
+                    idealReconCtx.moveTo(x, y);
+                } else {
+                    idealReconCtx.lineTo(x, y);
+                }
+            }
+
+            idealReconCtx.stroke();
+
+            // Rekonstruiertes Signal
+            idealReconCtx.strokeStyle = '#4CAF50';
+            idealReconCtx.lineWidth = 2.5;
+            idealReconCtx.beginPath();
+
+            for (let i = 0; i < plotPoints; i++) {
+                const t = (i / plotPoints) * duration;
+                const value = idealReconstruction(t, samples);
+                const x = timeToX(t, padding, plotWidth);
+                const y = valueToY(value, height, plotHeight);
+
+                if (i === 0) {
+                    idealReconCtx.moveTo(x, y);
+                } else {
+                    idealReconCtx.lineTo(x, y);
+                }
+            }
+
+            idealReconCtx.stroke();
+
+            // Abtastpunkte
+            idealReconCtx.fillStyle = '#f44336';
+            samples.forEach(sample => {
+                const x = timeToX(sample.time, padding, plotWidth);
+                const y = valueToY(sample.value, height, plotHeight);
+
+                idealReconCtx.beginPath();
+                idealReconCtx.arc(x, y, 4, 0, 2 * Math.PI);
+                idealReconCtx.fill();
+            });
+
+            drawAxesLabels(idealReconCtx, width, height, padding, duration);
+        }
+
+        // 3b. Sample-and-Hold Rekonstruktion
+        function drawSampleAndHold() {
+            const width = sahReconCanvas.width;
+            const height = sahReconCanvas.height;
+            const { padding, plotWidth, plotHeight } = setupCanvas(sahReconCtx, width, height);
+
+            const samples = getSamples();
+
+            // Original (transparent)
+            sahReconCtx.strokeStyle = 'rgba(33, 150, 243, 0.3)';
+            sahReconCtx.lineWidth = 2;
+            sahReconCtx.beginPath();
+
+            for (let i = 0; i < plotPoints; i++) {
+                const t = (i / plotPoints) * duration;
+                const value = generateSignal(t);
+                const x = timeToX(t, padding, plotWidth);
+                const y = valueToY(value, height, plotHeight);
+
+                if (i === 0) {
+                    sahReconCtx.moveTo(x, y);
+                } else {
+                    sahReconCtx.lineTo(x, y);
+                }
+            }
+
+            sahReconCtx.stroke();
+
+            // Sample-and-Hold (Treppenfunktion)
+            sahReconCtx.strokeStyle = '#FF9800';
+            sahReconCtx.lineWidth = 2.5;
+            sahReconCtx.beginPath();
+
+            for (let i = 0; i < samples.length; i++) {
+                const x1 = timeToX(samples[i].time, padding, plotWidth);
+                const y = valueToY(samples[i].value, height, plotHeight);
+
+                // Horizontale Linie
+                if (i === 0) {
+                    sahReconCtx.moveTo(x1, y);
+                }
+
+                if (i < samples.length - 1) {
+                    const x2 = timeToX(samples[i + 1].time, padding, plotWidth);
+                    sahReconCtx.lineTo(x2, y);
+
+                    // Vertikale Linie zum nächsten Wert
+                    const y2 = valueToY(samples[i + 1].value, height, plotHeight);
+                    sahReconCtx.lineTo(x2, y2);
+                } else {
+                    // Letzter Abschnitt
+                    sahReconCtx.lineTo(width - padding, y);
+                }
+            }
+
+            sahReconCtx.stroke();
+
+            // Abtastpunkte
+            sahReconCtx.fillStyle = '#f44336';
+            samples.forEach(sample => {
+                const x = timeToX(sample.time, padding, plotWidth);
+                const y = valueToY(sample.value, height, plotHeight);
+
+                sahReconCtx.beginPath();
+                sahReconCtx.arc(x, y, 4, 0, 2 * Math.PI);
+                sahReconCtx.fill();
+            });
+
+            drawAxesLabels(sahReconCtx, width, height, padding, duration);
+        }
+
+        // Aliasing-Warnung
+        function checkAliasing() {
+            // Höchste Frequenzkomponente im Signal bestimmen
+            let maxFreq = signalFrequency;
+
+            if (signalType === 'complex') {
+                maxFreq = signalFrequency * 3; // 3. Harmonische
+            } else if (signalType === 'square') {
+                maxFreq = signalFrequency * 7; // 7. Harmonische
+            }
+
+            const nyquistRate = 2 * maxFreq;
+            const warningBox = document.getElementById('warningBox');
+
+            if (samplingRate < nyquistRate) {
+                warningBox.classList.add('show');
+            } else {
+                warningBox.classList.remove('show');
+            }
+        }
+
+        // Alle Visualisierungen aktualisieren
+        function update() {
+            drawOriginalAndSamples();
+            drawSampledSignal();
+            drawIdealReconstruction();
+            drawSampleAndHold();
+            checkAliasing();
+        }
+
+        // Presets
+        function setPreset(preset) {
+            switch(preset) {
+                case 'sine':
+                    signalType = 'sine';
+                    signalFrequency = 2;
+                    samplingRate = 20;
+                    amplitude = 1.0;
+                    break;
+
+                case 'complex':
+                    signalType = 'complex';
+                    signalFrequency = 2;
+                    samplingRate = 30;
+                    amplitude = 1.0;
+                    break;
+
+                case 'square':
+                    signalType = 'square';
+                    signalFrequency = 2;
+                    samplingRate = 40; // Höhere Abtastrate für Rechteck
+                    amplitude = 1.0;
+                    break;
+
+                case 'sawtooth':
+                    signalType = 'sawtooth';
+                    signalFrequency = 2;
+                    samplingRate = 30;
+                    amplitude = 1.0;
+                    break;
+
+                case 'lowsampling':
+                    signalType = 'complex';
+                    signalFrequency = 3;
+                    samplingRate = 10; // Unter Nyquist-Rate für 3. Harmonische
+                    amplitude = 1.0;
+                    break;
+            }
+
+            // UI aktualisieren
+            document.getElementById('freqSlider').value = signalFrequency;
+            document.getElementById('freqValue').textContent = signalFrequency.toFixed(1) + ' Hz';
+            document.getElementById('samplingSlider').value = samplingRate;
+            document.getElementById('samplingValue').textContent = samplingRate + ' Hz';
+            document.getElementById('amplitudeSlider').value = amplitude * 100;
+            document.getElementById('amplitudeValue').textContent = amplitude.toFixed(1);
+
+            update();
+        }
+
+        // Initialisierung
+        update();
+    </script>
+</body>
+</html>

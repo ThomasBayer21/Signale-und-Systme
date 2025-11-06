@@ -11,7 +11,8 @@
             max-width: 900px;
             margin: 40px auto;
             padding: 20px;
-            background: #f5f5f5;
+            background: linear-gradient(135deg, #e4e4ec 0%, #d0d0dc 100%);
+            min-height: 100vh;
         }
         h1 {
             text-align: center;
@@ -28,16 +29,16 @@
         }
         .container {
             background: white;
-            border-radius: 8px;
+            border-radius: 20px;
             padding: 40px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
         }
         .intro {
-            background: #ecf0f1;
+            background: #f8f9fa;
             padding: 20px;
-            border-radius: 6px;
+            border-radius: 10px;
             margin-bottom: 35px;
-            border-left: 4px solid #3498db;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
             line-height: 1.6;
             color: #555;
         }
@@ -60,13 +61,22 @@
             box-shadow: 0 3px 8px rgba(0,0,0,0.15);
         }
         .viz-card.systems {
-            border-left-color: #667eea;
+            border-left-color: #d4c8b8;
         }
         .viz-card.elementary {
-            border-left-color: #f093fb;
+            border-left-color: #c4d8bc;
         }
         .viz-card.decibel {
-            border-left-color: #e74c3c;
+            border-left-color: #e0c8b8;
+        }
+        .viz-card.frequency {
+            border-left-color: #d4cce0;
+        }
+        .viz-card.operations {
+            border-left-color: #bcd8d4;
+        }
+        .viz-card.dsp {
+            border-left-color: #bcd4d4;
         }
         .viz-title {
             font-size: 1.3em;
@@ -137,6 +147,39 @@
                     logarithmische Eigenschaften und Rechenregeln für die praktische Anwendung.
                 </div>
                 <div class="viz-count">4 Visualisierungen</div>
+            </a>
+
+            <a href="frequenzanalyse/index.html" class="viz-card frequency">
+                <div class="viz-title">Frequenzanalyse</div>
+                <div class="viz-subtitle">Zeit- und Frequenzbereich</div>
+                <div class="viz-description">
+                    Erkunde die Fourier-Transformation und die Zerlegung von Signalen in ihre
+                    Frequenzkomponenten. Verstehe die fundamentale Beziehung zwischen Zeit- und
+                    Frequenzdarstellung und wie komplexe Signale aus Sinuswellen zusammengesetzt werden.
+                </div>
+                <div class="viz-count">1 Visualisierung</div>
+            </a>
+
+            <a href="signaloperationen/index.html" class="viz-card operations">
+                <div class="viz-title">Signaloperationen</div>
+                <div class="viz-subtitle">Faltung und Transformation</div>
+                <div class="viz-description">
+                    Lerne die wichtigsten Operationen zur Signalverarbeitung kennen. Die Faltung
+                    ist fundamental für das Verständnis von Systemantworten und Filterung.
+                    Visualisiere den Faltungsprozess Schritt für Schritt.
+                </div>
+                <div class="viz-count">1 Visualisierung</div>
+            </a>
+
+            <a href="digitale-signalverarbeitung/index.html" class="viz-card dsp">
+                <div class="viz-title">Digitale Signalverarbeitung</div>
+                <div class="viz-subtitle">Abtastung und Rekonstruktion</div>
+                <div class="viz-description">
+                    Verstehe den Übergang von analogen zu digitalen Signalen. Erkunde das
+                    Nyquist-Shannon-Abtasttheorem, ideale und praktische Rekonstruktionsverfahren,
+                    und beobachte Aliasing-Effekte bei Unterabtastung.
+                </div>
+                <div class="viz-count">1 Visualisierung</div>
             </a>
         </div>
     </div>

@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Faltung - Interaktive Visualisierung</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #d4ebe8 0%, #bcd8d4 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        .controls-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .control-group {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #e0e0e0;
+        }
+
+        .control-group h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 8px;
+        }
+
+        .control-row {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            font-weight: 600;
+        }
+
+        select, input[type="range"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        input[type="range"] {
+            cursor: pointer;
+        }
+
+        .param-value {
+            display: inline-block;
+            margin-left: 10px;
+            color: #667eea;
+            font-weight: bold;
+            min-width: 50px;
+        }
+
+        .canvas-container {
+            margin-bottom: 20px;
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        canvas {
+            display: block;
+            width: 100%;
+            border: 1px solid #e0e0e0;
+            border-radius: 5px;
+        }
+
+        .animation-controls {
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            margin: 0 10px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s;
+            box-shadow: 0 4px 6px rgba(102, 126, 234, 0.3);
+        }
+
+        button:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .info-box {
+            background: #e8eaf6;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 4px solid #667eea;
+        }
+
+        .info-box p {
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 5px;
+        }
+
+        .formula {
+            font-family: 'Courier New', monospace;
+            background: white;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            text-align: center;
+            font-size: 1.1em;
+            color: #667eea;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Faltung (Convolution)</h1>
+        <p class="subtitle">Interaktive Visualisierung der mathematischen Faltung</p>
+
+        <div class="info-box">
+            <p><strong>Die Faltung</strong> zweier Funktionen f(t) und h(t) ist definiert als:</p>
+            <div class="formula">(f ★ h)(t) = ∫ f(τ) · h(t-τ) dτ</div>
+            <p style="margin-top: 10px;">Die Animation zeigt, wie h(τ) gespiegelt und entlang der Zeitachse verschoben wird. Der Wert der Faltung an Position t ist die Fläche unter dem Produkt f(τ) · h(t-τ).</p>
+        </div>
+
+        <div class="controls-grid">
+            <div class="control-group">
+                <h3>Signal f(t)</h3>
+                <div class="control-row">
+                    <label>Funktionstyp:</label>
+                    <select id="func1Type">
+                        <option value="rect">Rechteckimpuls</option>
+                        <option value="triangle">Dreieckimpuls</option>
+                        <option value="exp">Exponentialfunktion</option>
+                        <option value="gauss">Gaußimpuls</option>
+                        <option value="sinc">Sinc-Funktion</option>
+                        <option value="sine">Sinus</option>
+                    </select>
+                </div>
+                <div class="control-row">
+                    <label>Amplitude: <span class="param-value" id="amp1Value">1.0</span></label>
+                    <input type="range" id="amp1" min="0.1" max="3" step="0.1" value="1">
+                </div>
+                <div class="control-row">
+                    <label>Breite/Frequenz: <span class="param-value" id="width1Value">1.0</span></label>
+                    <input type="range" id="width1" min="0.1" max="3" step="0.1" value="1">
+                </div>
+                <div class="control-row">
+                    <label>Position: <span class="param-value" id="pos1Value">0.0</span></label>
+                    <input type="range" id="pos1" min="-5" max="5" step="0.1" value="0">
+                </div>
+            </div>
+
+            <div class="control-group">
+                <h3>System h(t)</h3>
+                <div class="control-row">
+                    <label>Funktionstyp:</label>
+                    <select id="func2Type">
+                        <option value="rect">Rechteckimpuls</option>
+                        <option value="triangle">Dreieckimpuls</option>
+                        <option value="exp">Exponentialfunktion</option>
+                        <option value="gauss">Gaußimpuls</option>
+                        <option value="sinc">Sinc-Funktion</option>
+                        <option value="sine">Sinus</option>
+                    </select>
+                </div>
+                <div class="control-row">
+                    <label>Amplitude: <span class="param-value" id="amp2Value">1.0</span></label>
+                    <input type="range" id="amp2" min="0.1" max="3" step="0.1" value="1">
+                </div>
+                <div class="control-row">
+                    <label>Breite/Frequenz: <span class="param-value" id="width2Value">1.0</span></label>
+                    <input type="range" id="width2" min="0.1" max="3" step="0.1" value="1">
+                </div>
+                <div class="control-row">
+                    <label>Position: <span class="param-value" id="pos2Value">0.0</span></label>
+                    <input type="range" id="pos2" min="-5" max="5" step="0.1" value="0">
+                </div>
+            </div>
+        </div>
+
+        <div class="animation-controls">
+            <button id="playPause">▶ Play</button>
+            <button id="reset">↻ Reset</button>
+            <div class="control-row" style="max-width: 400px; margin: 20px auto 0;">
+                <label>Animationsgeschwindigkeit: <span class="param-value" id="speedValue">1.0x</span></label>
+                <input type="range" id="speed" min="0.1" max="3" step="0.1" value="1">
+            </div>
+            <div class="control-row" style="max-width: 400px; margin: 20px auto 0;">
+                <label>Zeit t: <span class="param-value" id="timeValue">-5.0</span></label>
+                <input type="range" id="timeSlider" min="-5" max="5" step="0.05" value="-5">
+            </div>
+        </div>
+
+        <div class="canvas-container">
+            <h3 style="margin-bottom: 10px; color: #667eea;">Animationsansicht: f(τ), h(t-τ) und ihr Produkt</h3>
+            <canvas id="animationCanvas" width="1200" height="300"></canvas>
+        </div>
+
+        <div class="canvas-container">
+            <h3 style="margin-bottom: 10px; color: #667eea;">Original-Funktionen: f(t) und h(t)</h3>
+            <canvas id="functionsCanvas" width="1200" height="300"></canvas>
+        </div>
+
+        <div class="canvas-container">
+            <h3 style="margin-bottom: 10px; color: #667eea;">Faltungsergebnis: (f ★ h)(t)</h3>
+            <canvas id="resultCanvas" width="1200" height="300"></canvas>
+        </div>
+    </div>
+
+    <script>
+        // Globale Variablen
+        let animationTime = -5;
+        let isPlaying = false;
+        let animationSpeed = 1;
+        let lastTime = 0;
+
+        // Canvas-Elemente
+        const animCanvas = document.getElementById('animationCanvas');
+        const funcCanvas = document.getElementById('functionsCanvas');
+        const resultCanvas = document.getElementById('resultCanvas');
+
+        const animCtx = animCanvas.getContext('2d');
+        const funcCtx = funcCanvas.getContext('2d');
+        const resultCtx = resultCanvas.getContext('2d');
+
+        // Funktionsdefinitionen
+        function rectanglePulse(t, amplitude, width, position) {
+            const halfWidth = width / 2;
+            return (Math.abs(t - position) <= halfWidth) ? amplitude : 0;
+        }
+
+        function trianglePulse(t, amplitude, width, position) {
+            const dt = Math.abs(t - position);
+            return (dt < width) ? amplitude * (1 - dt / width) : 0;
+        }
+
+        function exponential(t, amplitude, decay, position) {
+            const shifted = t - position;
+            return (shifted >= 0) ? amplitude * Math.exp(-decay * shifted) : 0;
+        }
+
+        function gaussian(t, amplitude, sigma, position) {
+            const dt = t - position;
+            return amplitude * Math.exp(-(dt * dt) / (2 * sigma * sigma));
+        }
+
+        function sinc(t, amplitude, width, position) {
+            const dt = (t - position) / width;
+            if (Math.abs(dt) < 0.001) return amplitude;
+            return amplitude * Math.sin(Math.PI * dt) / (Math.PI * dt);
+        }
+
+        function sine(t, amplitude, frequency, position) {
+            return amplitude * Math.sin(2 * Math.PI * frequency * (t - position));
+        }
+
+        function getFunction(type, amplitude, width, position) {
+            return (t) => {
+                switch(type) {
+                    case 'rect': return rectanglePulse(t, amplitude, width, position);
+                    case 'triangle': return trianglePulse(t, amplitude, width, position);
+                    case 'exp': return exponential(t, amplitude, width, position);
+                    case 'gauss': return gaussian(t, amplitude, width, position);
+                    case 'sinc': return sinc(t, amplitude, width, position);
+                    case 'sine': return sine(t, amplitude, width, position);
+                    default: return 0;
+                }
+            };
+        }
+
+        // Numerische Integration (Trapezregel)
+        function integrate(func, a, b, steps = 1000) {
+            const h = (b - a) / steps;
+            let sum = (func(a) + func(b)) / 2;
+            for (let i = 1; i < steps; i++) {
+                sum += func(a + i * h);
+            }
+            return sum * h;
+        }
+
+        // Faltung berechnen
+        function convolve(f, g, t) {
+            return integrate(tau => f(tau) * g(t - tau), -10, 10, 500);
+        }
+
+        // Zeichenfunktionen
+        function drawGrid(ctx, width, height, xMin, xMax, yMin, yMax) {
+            const padding = 60;
+            const plotWidth = width - 2 * padding;
+            const plotHeight = height - 2 * padding;
+
+            ctx.fillStyle = 'white';
+            ctx.fillRect(0, 0, width, height);
+
+            // Gitter
+            ctx.strokeStyle = '#e0e0e0';
+            ctx.lineWidth = 1;
+
+            for (let i = 0; i <= 10; i++) {
+                const x = padding + (plotWidth / 10) * i;
+                const y = padding + (plotHeight / 10) * i;
+
+                ctx.beginPath();
+                ctx.moveTo(x, padding);
+                ctx.lineTo(x, height - padding);
+                ctx.stroke();
+
+                ctx.beginPath();
+                ctx.moveTo(padding, y);
+                ctx.lineTo(width - padding, y);
+                ctx.stroke();
+            }
+
+            // Achsen
+            ctx.strokeStyle = '#333';
+            ctx.lineWidth = 2;
+
+            const yZero = padding + plotHeight * (yMax / (yMax - yMin));
+            const xZero = padding + plotWidth * (-xMin / (xMax - xMin));
+
+            ctx.beginPath();
+            ctx.moveTo(padding, yZero);
+            ctx.lineTo(width - padding, yZero);
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.moveTo(xZero, padding);
+            ctx.lineTo(xZero, height - padding);
+            ctx.stroke();
+
+            // Beschriftung
+            ctx.fillStyle = '#666';
+            ctx.font = '12px Arial';
+            ctx.textAlign = 'center';
+
+            for (let i = Math.ceil(xMin); i <= Math.floor(xMax); i += 2) {
+                const x = padding + plotWidth * ((i - xMin) / (xMax - xMin));
+                ctx.fillText(i.toString(), x, yZero + 20);
+            }
+
+            ctx.textAlign = 'right';
+            for (let i = Math.ceil(yMin); i <= Math.floor(yMax); i++) {
+                if (i === 0) continue;
+                const y = padding + plotHeight * ((yMax - i) / (yMax - yMin));
+                ctx.fillText(i.toString(), xZero - 10, y + 4);
+            }
+
+            return { padding, plotWidth, plotHeight, xZero, yZero };
+        }
+
+        function plotFunction(ctx, func, xMin, xMax, color, lineWidth = 2, dims) {
+            const { padding, plotWidth, plotHeight } = dims;
+            const yMin = -2, yMax = 3;
+
+            ctx.strokeStyle = color;
+            ctx.lineWidth = lineWidth;
+            ctx.beginPath();
+
+            const steps = 1000;
+            for (let i = 0; i <= steps; i++) {
+                const t = xMin + (xMax - xMin) * (i / steps);
+                const value = func(t);
+                const x = padding + plotWidth * ((t - xMin) / (xMax - xMin));
+                const y = padding + plotHeight * ((yMax - value) / (yMax - yMin));
+
+                if (i === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+            }
+            ctx.stroke();
+        }
+
+        function fillUnderProduct(ctx, f, g, t, xMin, xMax, dims) {
+            const { padding, plotWidth, plotHeight } = dims;
+            const yMin = -2, yMax = 3;
+
+            ctx.fillStyle = 'rgba(255, 165, 0, 0.3)';
+            ctx.beginPath();
+
+            const steps = 500;
+            const yZero = padding + plotHeight * (yMax / (yMax - yMin));
+
+            for (let i = 0; i <= steps; i++) {
+                const tau = xMin + (xMax - xMin) * (i / steps);
+                const value = f(tau) * g(t - tau);
+                const x = padding + plotWidth * ((tau - xMin) / (xMax - xMin));
+                const y = padding + plotHeight * ((yMax - value) / (yMax - yMin));
+
+                if (i === 0) {
+                    ctx.moveTo(x, yZero);
+                    ctx.lineTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+            }
+
+            ctx.lineTo(padding + plotWidth, yZero);
+            ctx.closePath();
+            ctx.fill();
+        }
+
+        // Update-Funktionen
+        function updateAnimation() {
+            const xMin = -5, xMax = 5;
+
+            const func1Type = document.getElementById('func1Type').value;
+            const amp1 = parseFloat(document.getElementById('amp1').value);
+            const width1 = parseFloat(document.getElementById('width1').value);
+            const pos1 = parseFloat(document.getElementById('pos1').value);
+
+            const func2Type = document.getElementById('func2Type').value;
+            const amp2 = parseFloat(document.getElementById('amp2').value);
+            const width2 = parseFloat(document.getElementById('width2').value);
+            const pos2 = parseFloat(document.getElementById('pos2').value);
+
+            const f = getFunction(func1Type, amp1, width1, pos1);
+            const h = getFunction(func2Type, amp2, width2, pos2);
+            const h_flipped = (tau) => h(animationTime - tau);
+
+            const dims = drawGrid(animCtx, animCanvas.width, animCanvas.height, xMin, xMax, -2, 3);
+
+            // Fläche unter dem Produkt
+            fillUnderProduct(animCtx, f, h_flipped, animationTime, xMin, xMax, dims);
+
+            // Funktionen plotten
+            plotFunction(animCtx, f, xMin, xMax, '#2196F3', 3, dims);
+            plotFunction(animCtx, h_flipped, xMin, xMax, '#E91E63', 3, dims);
+            plotFunction(animCtx, (tau) => f(tau) * h_flipped(tau), xMin, xMax, '#FF9800', 2, dims);
+
+            // Legende
+            animCtx.fillStyle = '#2196F3';
+            animCtx.fillRect(20, 20, 20, 10);
+            animCtx.fillStyle = '#333';
+            animCtx.font = '14px Arial';
+            animCtx.textAlign = 'left';
+            animCtx.fillText('f(τ)', 45, 30);
+
+            animCtx.fillStyle = '#E91E63';
+            animCtx.fillRect(120, 20, 20, 10);
+            animCtx.fillStyle = '#333';
+            animCtx.fillText('h(t-τ)', 145, 30);
+
+            animCtx.fillStyle = '#FF9800';
+            animCtx.fillRect(230, 20, 20, 10);
+            animCtx.fillStyle = '#333';
+            animCtx.fillText('f(τ)·h(t-τ)', 255, 30);
+
+            // Zeitmarker
+            animCtx.fillStyle = '#667eea';
+            animCtx.font = 'bold 16px Arial';
+            animCtx.textAlign = 'right';
+            animCtx.fillText(`t = ${animationTime.toFixed(2)}`, animCanvas.width - 20, 30);
+        }
+
+        function updateFunctions() {
+            const xMin = -5, xMax = 5;
+
+            const func1Type = document.getElementById('func1Type').value;
+            const amp1 = parseFloat(document.getElementById('amp1').value);
+            const width1 = parseFloat(document.getElementById('width1').value);
+            const pos1 = parseFloat(document.getElementById('pos1').value);
+
+            const func2Type = document.getElementById('func2Type').value;
+            const amp2 = parseFloat(document.getElementById('amp2').value);
+            const width2 = parseFloat(document.getElementById('width2').value);
+            const pos2 = parseFloat(document.getElementById('pos2').value);
+
+            const f = getFunction(func1Type, amp1, width1, pos1);
+            const h = getFunction(func2Type, amp2, width2, pos2);
+
+            const dims = drawGrid(funcCtx, funcCanvas.width, funcCanvas.height, xMin, xMax, -2, 3);
+
+            plotFunction(funcCtx, f, xMin, xMax, '#2196F3', 3, dims);
+            plotFunction(funcCtx, h, xMin, xMax, '#E91E63', 3, dims);
+
+            // Legende
+            funcCtx.fillStyle = '#2196F3';
+            funcCtx.fillRect(20, 20, 20, 10);
+            funcCtx.fillStyle = '#333';
+            funcCtx.font = '14px Arial';
+            funcCtx.textAlign = 'left';
+            funcCtx.fillText('f(t)', 45, 30);
+
+            funcCtx.fillStyle = '#E91E63';
+            funcCtx.fillRect(120, 20, 20, 10);
+            funcCtx.fillStyle = '#333';
+            funcCtx.fillText('h(t)', 145, 30);
+        }
+
+        function updateResult() {
+            const xMin = -5, xMax = 5;
+
+            const func1Type = document.getElementById('func1Type').value;
+            const amp1 = parseFloat(document.getElementById('amp1').value);
+            const width1 = parseFloat(document.getElementById('width1').value);
+            const pos1 = parseFloat(document.getElementById('pos1').value);
+
+            const func2Type = document.getElementById('func2Type').value;
+            const amp2 = parseFloat(document.getElementById('amp2').value);
+            const width2 = parseFloat(document.getElementById('width2').value);
+            const pos2 = parseFloat(document.getElementById('pos2').value);
+
+            const f = getFunction(func1Type, amp1, width1, pos1);
+            const h = getFunction(func2Type, amp2, width2, pos2);
+
+            const dims = drawGrid(resultCtx, resultCanvas.width, resultCanvas.height, xMin, xMax, -2, 3);
+
+            // Faltung berechnen und plotten
+            const convResult = (t) => convolve(f, h, t);
+            plotFunction(resultCtx, convResult, xMin, xMax, '#4CAF50', 3, dims);
+
+            // Aktuellen Zeitpunkt markieren
+            const { padding, plotWidth, plotHeight } = dims;
+            const yMin = -2, yMax = 3;
+            const x = padding + plotWidth * ((animationTime - xMin) / (xMax - xMin));
+            const value = convResult(animationTime);
+            const y = padding + plotHeight * ((yMax - value) / (yMax - yMin));
+
+            resultCtx.fillStyle = '#FF5722';
+            resultCtx.beginPath();
+            resultCtx.arc(x, y, 6, 0, 2 * Math.PI);
+            resultCtx.fill();
+
+            // Legende
+            resultCtx.fillStyle = '#4CAF50';
+            resultCtx.fillRect(20, 20, 20, 10);
+            resultCtx.fillStyle = '#333';
+            resultCtx.font = '14px Arial';
+            resultCtx.textAlign = 'left';
+            resultCtx.fillText('(f ★ h)(t)', 45, 30);
+
+            resultCtx.fillStyle = '#FF5722';
+            resultCtx.fillRect(150, 20, 20, 10);
+            resultCtx.fillStyle = '#333';
+            resultCtx.fillText('Aktueller Zeitpunkt', 175, 30);
+        }
+
+        function updateAll() {
+            updateAnimation();
+            updateFunctions();
+            updateResult();
+        }
+
+        // Animation Loop
+        function animate(currentTime) {
+            if (isPlaying) {
+                const deltaTime = (currentTime - lastTime) / 1000;
+                lastTime = currentTime;
+
+                animationTime += deltaTime * animationSpeed;
+
+                if (animationTime > 5) {
+                    animationTime = -5;
+                }
+
+                document.getElementById('timeSlider').value = animationTime;
+                document.getElementById('timeValue').textContent = animationTime.toFixed(2);
+
+                updateAll();
+            }
+            requestAnimationFrame(animate);
+        }
+
+        // Event Listeners
+        document.getElementById('playPause').addEventListener('click', function() {
+            isPlaying = !isPlaying;
+            this.textContent = isPlaying ? '⏸ Pause' : '▶ Play';
+            if (isPlaying) {
+                lastTime = performance.now();
+            }
+        });
+
+        document.getElementById('reset').addEventListener('click', function() {
+            animationTime = -5;
+            document.getElementById('timeSlider').value = -5;
+            document.getElementById('timeValue').textContent = '-5.0';
+            updateAll();
+        });
+
+        document.getElementById('speed').addEventListener('input', function() {
+            animationSpeed = parseFloat(this.value);
+            document.getElementById('speedValue').textContent = animationSpeed.toFixed(1) + 'x';
+        });
+
+        document.getElementById('timeSlider').addEventListener('input', function() {
+            animationTime = parseFloat(this.value);
+            document.getElementById('timeValue').textContent = animationTime.toFixed(2);
+            updateAll();
+        });
+
+        // Parameter-Updates
+        ['func1Type', 'func2Type'].forEach(id => {
+            document.getElementById(id).addEventListener('change', updateAll);
+        });
+
+        ['amp1', 'width1', 'pos1', 'amp2', 'width2', 'pos2'].forEach(id => {
+            document.getElementById(id).addEventListener('input', function() {
+                const valueId = id + 'Value';
+                document.getElementById(valueId).textContent = parseFloat(this.value).toFixed(1);
+                updateAll();
+            });
+        });
+
+        // Initiale Darstellung
+        requestAnimationFrame(animate);
+        updateAll();
+    </script>
+</body>
+</html>

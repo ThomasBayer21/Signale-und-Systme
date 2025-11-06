@@ -8,45 +8,45 @@
         * { box-sizing: border-box; }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            max-width: 1200px;
-            margin: 40px auto;
+            background: linear-gradient(135deg, #f0dcd0 0%, #e0c8b8 100%);
             padding: 20px;
-            background: #f5f5f5;
+            min-height: 100vh;
         }
         h1 {
             text-align: center;
-            color: #2c3e50;
+            color: #333;
             margin-bottom: 10px;
-            font-size: 2em;
-            font-weight: 600;
+            font-size: 2.5em;
         }
         .description {
             text-align: center;
-            color: #555;
+            color: #666;
             margin-bottom: 30px;
             font-size: 1.1em;
         }
         .container {
+            max-width: 1200px;
+            margin: 0 auto;
             background: white;
-            border-radius: 8px;
+            border-radius: 20px;
             padding: 30px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
         }
         .info-box {
-            background: #ecf0f1;
+            background: #f8f9fa;
             padding: 20px;
-            border-radius: 6px;
+            border-radius: 10px;
             margin-bottom: 20px;
-            border-left: 4px solid #e74c3c;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
         .info-box h3 {
             margin: 0 0 10px 0;
             font-size: 1.1em;
-            color: #2c3e50;
+            color: #333;
         }
         .info-box p {
             margin: 5px 0;
-            color: #555;
+            color: #666;
             line-height: 1.5;
         }
         .calculator-grid {
@@ -62,7 +62,7 @@
             border: 2px solid #e0e0e0;
         }
         .calc-section h3 {
-            color: #2c3e50;
+            color: #333;
             margin: 0 0 20px 0;
             text-align: center;
             font-size: 1.2em;
@@ -79,7 +79,7 @@
         .input-group label {
             display: block;
             font-size: 14px;
-            color: #555;
+            color: #666;
             margin-bottom: 5px;
             font-weight: 500;
         }
@@ -120,14 +120,14 @@
             font-family: 'Courier New', monospace;
             font-size: 14px;
             margin: 15px 0;
-            color: #555;
+            color: #666;
             border: 1px solid #ddd;
         }
         .quick-ref {
             margin: 30px 0;
         }
         .quick-ref h3 {
-            color: #2c3e50;
+            color: #333;
             margin-bottom: 15px;
         }
         .ref-grid {
@@ -154,9 +154,10 @@
             margin-bottom: 5px;
         }
         .ref-card .description {
-            font-size: 13px;
-            color: #555;
-            line-height: 1.4;
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
         }
         .important-points {
             background: #fff8f0;
@@ -174,7 +175,7 @@
             padding-left: 25px;
         }
         .important-points li {
-            color: #555;
+            color: #666;
             line-height: 1.8;
             margin: 8px 0;
         }
@@ -208,9 +209,9 @@
 
         <div style="background: #fff3cd; padding: 20px; border-radius: 6px; margin: 20px 0; border-left: 6px solid #ff9800;">
             <h4 style="color: #e65100; margin: 0 0 10px 0;">WICHTIG: Unterschied beachten!</h4>
-            <p style="color: #555; margin: 5px 0;"><strong>Links (Feldgrößen):</strong> Für Spannung, Strom, Schalldruck → 20·log₁₀</p>
-            <p style="color: #555; margin: 5px 0;"><strong>Rechts (Leistung):</strong> Für elektrische/akustische Leistung → 10·log₁₀</p>
-            <p style="color: #555; margin: 10px 0 0 0; font-size: 0.95em;"><em>Beide beschreiben das gleiche physikalische Verhältnis, da P ∝ A²</em></p>
+            <p style="color: #666; margin: 5px 0;"><strong>Links (Feldgrößen):</strong> Für Spannung, Strom, Schalldruck → 20·log₁₀</p>
+            <p style="color: #666; margin: 5px 0;"><strong>Rechts (Leistung):</strong> Für elektrische/akustische Leistung → 10·log₁₀</p>
+            <p style="color: #666; margin: 10px 0 0 0; font-size: 0.95em;"><em>Beide beschreiben das gleiche physikalische Verhältnis, da P ∝ A²</em></p>
         </div>
 
         <div class="calculator-grid">
@@ -377,22 +378,22 @@
         <div style="background: #f0f8ff; padding: 20px; border-radius: 6px; margin: 20px 0; border: 2px solid #3498db;">
             <h4 style="color: #2980b9; margin: 0 0 15px 0;">Schnellrechnen mit dB</h4>
             <ul style="margin: 0; padding-left: 25px;">
-                <li style="color: #555; line-height: 1.8; margin: 8px 0;">
+                <li style="color: #666; line-height: 1.8; margin: 8px 0;">
                     <strong style="color: #2980b9;">Verdopplung (×2):</strong> Feldgröße: +6 dB (20·log₁₀) | Leistung: +3 dB (10·log₁₀)
                 </li>
-                <li style="color: #555; line-height: 1.8; margin: 8px 0;">
+                <li style="color: #666; line-height: 1.8; margin: 8px 0;">
                     <strong style="color: #2980b9;">Halbierung (÷2):</strong> Feldgröße: -6 dB | Leistung: -3 dB
                 </li>
-                <li style="color: #555; line-height: 1.8; margin: 8px 0;">
+                <li style="color: #666; line-height: 1.8; margin: 8px 0;">
                     <strong style="color: #2980b9;">Faktor 10 (×10):</strong> Feldgröße: +20 dB | Leistung: +10 dB
                 </li>
-                <li style="color: #555; line-height: 1.8; margin: 8px 0;">
+                <li style="color: #666; line-height: 1.8; margin: 8px 0;">
                     <strong style="color: #2980b9;">Faktor 100 (×100):</strong> Feldgröße: +40 dB | Leistung: +20 dB
                 </li>
-                <li style="color: #555; line-height: 1.8; margin: 8px 0;">
+                <li style="color: #666; line-height: 1.8; margin: 8px 0;">
                     <strong style="color: #2980b9;">Praktischer Trick (Feldgröße):</strong> 6dB ≈ ×2, also 12dB ≈ ×4, 18dB ≈ ×8, 24dB ≈ ×16
                 </li>
-                <li style="color: #555; line-height: 1.8; margin: 8px 0;">
+                <li style="color: #666; line-height: 1.8; margin: 8px 0;">
                     <strong style="color: #2980b9;">Praktischer Trick (Leistung):</strong> 3dB ≈ ×2, also 6dB ≈ ×4, 9dB ≈ ×8, 12dB ≈ ×16
                 </li>
             </ul>

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Frequenzanalyse</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 2.2em;
+            font-weight: 600;
+        }
+        .subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            margin-bottom: 40px;
+            font-size: 1.1em;
+        }
+        .container {
+            background: white;
+            border-radius: 8px;
+            padding: 40px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .intro {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 35px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            line-height: 1.6;
+            color: #555;
+        }
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        .visualizations {
+            display: grid;
+            gap: 20px;
+        }
+        .viz-card {
+            background: #fafafa;
+            padding: 25px;
+            border-radius: 6px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+        .viz-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+        }
+        .viz-title {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        .viz-subtitle {
+            font-size: 0.95em;
+            color: #7f8c8d;
+            margin-bottom: 12px;
+            font-style: italic;
+        }
+        .viz-description {
+            color: #555;
+            line-height: 1.6;
+            font-size: 0.95em;
+        }
+    </style>
+</head>
+<body>
+    <a href="../index.html" class="back-link">← Zurück zur Übersicht</a>
+
+    <h1>Frequenzanalyse</h1>
+    <div class="subtitle">Transformation zwischen Zeit- und Frequenzbereich</div>
+
+    <div class="container">
+        <div class="intro">
+            Die Frequenzanalyse ermöglicht die Zerlegung von Signalen in ihre Frequenzkomponenten.
+            Die Fourier-Transformation ist das zentrale Werkzeug, um Signale vom Zeitbereich in den
+            Frequenzbereich zu transformieren und umgekehrt.
+        </div>
+
+        <div class="visualizations">
+            <a href="fourier_transformation.html" class="viz-card">
+                <div class="viz-title">Fourier-Transformation</div>
+                <div class="viz-subtitle">Zerlegung in Frequenzkomponenten</div>
+                <div class="viz-description">
+                    Interaktive Visualisierung der Fourier-Transformation. Erkunden Sie, wie komplexe
+                    Signale aus einfachen Sinuswellen mit unterschiedlichen Frequenzen, Amplituden und
+                    Phasen zusammengesetzt werden können. Verstehen Sie die Beziehung zwischen Zeit- und
+                    Frequenzbereich.
+                </div>
+            </a>
+        </div>
+    </div>
+</body>
+</html>
