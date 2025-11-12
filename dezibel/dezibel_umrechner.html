@@ -25,7 +25,7 @@
             font-size: 1.1em;
         }
         .container {
-            max-width: 1200px;
+            max-width: 900px;
             margin: 0 auto;
             background: white;
             border-radius: 20px;
@@ -33,16 +33,11 @@
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
         }
         .info-box {
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 10px;
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 6px;
             margin-bottom: 20px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-        .info-box h3 {
-            margin: 0 0 10px 0;
-            font-size: 1.1em;
-            color: #333;
+            border-left: 4px solid #ff9800;
         }
         .info-box p {
             margin: 5px 0;
@@ -52,20 +47,20 @@
         .calculator-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 30px;
-            margin: 30px 0;
+            gap: 20px;
+            margin: 20px 0;
         }
         .calc-section {
             background: #fafafa;
-            padding: 25px;
+            padding: 20px;
             border-radius: 8px;
             border: 2px solid #e0e0e0;
         }
         .calc-section h3 {
             color: #333;
-            margin: 0 0 20px 0;
+            margin: 0 0 15px 0;
             text-align: center;
-            font-size: 1.2em;
+            font-size: 1.1em;
         }
         .calc-section.amplitude {
             border-color: #3498db;
@@ -74,22 +69,21 @@
             border-color: #e74c3c;
         }
         .input-group {
-            margin: 15px 0;
+            margin: 12px 0;
         }
         .input-group label {
             display: block;
-            font-size: 14px;
+            font-size: 13px;
             color: #666;
             margin-bottom: 5px;
             font-weight: 500;
         }
         .input-group input {
             width: 100%;
-            padding: 10px;
-            font-size: 16px;
+            padding: 8px;
+            font-size: 15px;
             border: 2px solid #ddd;
             border-radius: 4px;
-            transition: border-color 0.2s;
         }
         .input-group input:focus {
             outline: none;
@@ -97,47 +91,52 @@
         }
         .result-box {
             background: white;
-            padding: 15px;
+            padding: 12px;
             border-radius: 6px;
-            margin: 15px 0;
+            margin: 10px 0;
             border-left: 4px solid #27ae60;
         }
         .result-box .label {
-            font-size: 13px;
+            font-size: 12px;
             color: #7f8c8d;
-            margin-bottom: 5px;
+            margin-bottom: 3px;
         }
         .result-box .value {
-            font-size: 22px;
+            font-size: 18px;
             font-weight: 600;
             color: #27ae60;
         }
         .formula-box {
             background: #f8f9fa;
-            padding: 15px;
+            padding: 10px;
             border-radius: 6px;
             text-align: center;
             font-family: 'Courier New', monospace;
-            font-size: 14px;
-            margin: 15px 0;
+            font-size: 13px;
+            margin: 10px 0;
             color: #666;
             border: 1px solid #ddd;
         }
         .quick-ref {
-            margin: 30px 0;
+            margin: 25px 0;
+            background: #fff8f0;
+            padding: 20px;
+            border-radius: 8px;
+            border: 2px solid #f39c12;
         }
         .quick-ref h3 {
-            color: #333;
-            margin-bottom: 15px;
+            color: #e67e22;
+            margin: 0 0 15px 0;
+            font-size: 1.1em;
         }
         .ref-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 10px;
         }
         .ref-card {
             background: #fff;
-            padding: 15px;
+            padding: 12px;
             border-radius: 6px;
             border-left: 4px solid #9b59b6;
             cursor: pointer;
@@ -148,43 +147,19 @@
             box-shadow: 0 3px 8px rgba(0,0,0,0.15);
         }
         .ref-card .db-value {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: 600;
             color: #9b59b6;
             margin-bottom: 5px;
         }
-        .ref-card .description {
-            text-align: center;
+        .ref-card .ref-desc {
+            font-size: 11px;
             color: #666;
-            margin-bottom: 30px;
-            font-size: 1.1em;
-        }
-        .important-points {
-            background: #fff8f0;
-            padding: 20px;
-            border-radius: 6px;
-            margin: 20px 0;
-            border: 2px solid #f39c12;
-        }
-        .important-points h4 {
-            color: #e67e22;
-            margin: 0 0 15px 0;
-        }
-        .important-points ul {
-            margin: 0;
-            padding-left: 25px;
-        }
-        .important-points li {
-            color: #666;
-            line-height: 1.8;
-            margin: 8px 0;
-        }
-        .important-points strong {
-            color: #e67e22;
+            line-height: 1.3;
         }
         .back-link {
             text-align: center;
-            margin-top: 30px;
+            margin-top: 25px;
         }
         .back-link a {
             color: #3498db;
@@ -202,32 +177,21 @@
 
     <div class="container">
         <div class="info-box">
-            <h3>Hinweise zur Nutzung</h3>
-            <p>Gebe einen Wert in eines der Felder ein - die anderen Werte werden automatisch berechnet</p>
-            <p>Klicke auf die Schnellreferenz-Karten, um häufig verwendete dB-Werte einzutragen</p>
-        </div>
-
-        <div style="background: #fff3cd; padding: 20px; border-radius: 6px; margin: 20px 0; border-left: 6px solid #ff9800;">
-            <h4 style="color: #e65100; margin: 0 0 10px 0;">WICHTIG: Unterschied beachten!</h4>
-            <p style="color: #666; margin: 5px 0;"><strong>Links (Feldgrößen):</strong> Für Spannung, Strom, Schalldruck → 20·log₁₀</p>
-            <p style="color: #666; margin: 5px 0;"><strong>Rechts (Leistung):</strong> Für elektrische/akustische Leistung → 10·log₁₀</p>
-            <p style="color: #666; margin: 10px 0 0 0; font-size: 0.95em;"><em>Beide beschreiben das gleiche physikalische Verhältnis, da P ∝ A²</em></p>
+            <p><strong>Feldgrößen (links):</strong> Spannung, Strom, Schalldruck → 20·log₁₀</p>
+            <p><strong>Leistung (rechts):</strong> Elektrische/akustische Leistung → 10·log₁₀</p>
         </div>
 
         <div class="calculator-grid">
             <!-- Amplitude Calculator -->
             <div class="calc-section amplitude">
-                <h3>Feldgrößen-Berechnung</h3>
-                <p style="text-align: center; color: #666; font-size: 0.9em; margin: -10px 0 10px 0;">
-                    (Spannung, Strom, Schalldruck, etc.)
-                </p>
+                <h3>Feldgrößen</h3>
 
                 <div class="formula-box">
                     L<sub>dB</sub> = 20 · log<sub>10</sub>(A / A<sub>0</sub>)
                 </div>
 
                 <div class="input-group">
-                    <label>Feldgröße A (z.B. Spannung in V):</label>
+                    <label>Feldgröße A:</label>
                     <input type="number" id="amp-linear" placeholder="z.B. 2.0" step="any">
                 </div>
 
@@ -237,7 +201,7 @@
                 </div>
 
                 <div class="input-group">
-                    <label>Pegel in dB (20·log₁₀):</label>
+                    <label>Pegel in dB:</label>
                     <input type="number" id="amp-db" placeholder="z.B. 6.0" step="any">
                 </div>
 
@@ -245,26 +209,18 @@
                     <div class="label">Verhältnis A/A₀</div>
                     <div class="value" id="amp-ratio">1.00</div>
                 </div>
-
-                <div class="result-box">
-                    <div class="label">Entsprechende Leistung (A/A₀)²</div>
-                    <div class="value" id="amp-power">1.00</div>
-                </div>
             </div>
 
             <!-- Power Calculator -->
             <div class="calc-section power">
-                <h3>Leistungs-Berechnung</h3>
-                <p style="text-align: center; color: #666; font-size: 0.9em; margin: -10px 0 10px 0;">
-                    (elektrische Leistung, Schallintensität, etc.)
-                </p>
+                <h3>Leistung</h3>
 
                 <div class="formula-box">
                     L<sub>dB</sub> = 10 · log<sub>10</sub>(P / P<sub>0</sub>)
                 </div>
 
                 <div class="input-group">
-                    <label>Leistung P (z.B. Leistung in W):</label>
+                    <label>Leistung P:</label>
                     <input type="number" id="pow-linear" placeholder="z.B. 4.0" step="any">
                 </div>
 
@@ -274,7 +230,7 @@
                 </div>
 
                 <div class="input-group">
-                    <label>Pegel in dB (10·log₁₀):</label>
+                    <label>Pegel in dB:</label>
                     <input type="number" id="pow-db" placeholder="z.B. 6.0" step="any">
                 </div>
 
@@ -282,121 +238,41 @@
                     <div class="label">Verhältnis P/P₀</div>
                     <div class="value" id="pow-ratio">1.00</div>
                 </div>
-
-                <div class="result-box">
-                    <div class="label">Entsprechende Feldgröße √(P/P₀)</div>
-                    <div class="value" id="pow-amplitude">1.00</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="important-points">
-            <h4>Schnellreferenz (klicken zum Eintragen)</h4>
-            <p style="color: #666; font-size: 0.9em; margin: 0 0 15px 0;">
-                <strong>Beachte:</strong> Gleicher dB-Wert bedeutet unterschiedliche Verhältnisse für Feldgrößen vs. Leistung!
-            </p>
-            <div class="ref-grid">
-                <div class="ref-card" onclick="setDB(20)">
-                    <div class="db-value">+20 dB</div>
-                    <div class="description"><strong>Feldgröße:</strong> ×10<br><strong>Leistung:</strong> ×100</div>
-                </div>
-                <div class="ref-card" onclick="setDB(6)">
-                    <div class="db-value">+6 dB</div>
-                    <div class="description"><strong>Feldgröße:</strong> ×2<br><strong>Leistung:</strong> ×4</div>
-                </div>
-                <div class="ref-card" onclick="setDB(3)">
-                    <div class="db-value">+3 dB</div>
-                    <div class="description"><strong>Feldgröße:</strong> ×1.41<br><strong>Leistung:</strong> ×2</div>
-                </div>
-                <div class="ref-card" onclick="setDB(0)">
-                    <div class="db-value">0 dB</div>
-                    <div class="description"><strong>Referenz</strong><br>Keine Änderung</div>
-                </div>
-                <div class="ref-card" onclick="setDB(-3)">
-                    <div class="db-value">-3 dB</div>
-                    <div class="description"><strong>Feldgröße:</strong> ×0.707<br><strong>Leistung:</strong> ÷2</div>
-                </div>
-                <div class="ref-card" onclick="setDB(-6)">
-                    <div class="db-value">-6 dB</div>
-                    <div class="description"><strong>Feldgröße:</strong> ÷2<br><strong>Leistung:</strong> ÷4</div>
-                </div>
-                <div class="ref-card" onclick="setDB(-20)">
-                    <div class="db-value">-20 dB</div>
-                    <div class="description"><strong>Feldgröße:</strong> ÷10<br><strong>Leistung:</strong> ÷100</div>
-                </div>
-                <div class="ref-card" onclick="setDB(-40)">
-                    <div class="db-value">-40 dB</div>
-                    <div class="description"><strong>Feldgröße:</strong> ÷100<br><strong>Leistung:</strong> ÷10000</div>
-                </div>
             </div>
         </div>
 
         <div class="quick-ref">
-            <h3>Merksätze (sehr wichtig!)</h3>
-            <ul>
-                <li><strong>Verdopplung Feldgröße (×2):</strong> +6 dB (genau: 6.02 dB) mit 20·log₁₀</li>
-                <li><strong>Verdopplung Leistung (×2):</strong> +3 dB (genau: 3.01 dB) mit 10·log₁₀</li>
-                <li><strong>Verzehnfachung Feldgröße (×10):</strong> +20 dB (genau) mit 20·log₁₀</li>
-                <li><strong>Verzehnfachung Leistung (×10):</strong> +10 dB (genau) mit 10·log₁₀</li>
-                <li><strong>-3 dB Punkt:</strong> 70.7% Feldgröße (×0.707), 50% Leistung (÷2) (Grenzfrequenz)</li>
-                <li><strong>Addition in dB:</strong> Multiplikation im Linearen: +6dB + 6dB = +12dB entspricht ×2 × ×2 = ×4</li>
-                <li><strong>KERNPUNKT:</strong> Gleicher dB-Wert = verschiedene Verhältnisse! +6dB ist ×2 für Feldgrößen, aber ×4 für Leistung</li>
-            </ul>
-        </div>
-
-        <div class="important-points">
-            <h4>Wichtige Rechenregeln in dB</h4>
-            <ul>
-                <li><strong>Multiplikation → Addition:</strong> A₁ · A₂ entspricht L₁(dB) + L₂(dB)
-                    <br><span style="margin-left: 20px; color: #7f8c8d;">Beispiel (Feldgröße): 2×2 = 4 ⟹ 6dB + 6dB = 12dB</span>
-                </li>
-                <li><strong>Division → Subtraktion:</strong> A₁ / A₂ entspricht L₁(dB) - L₂(dB)
-                    <br><span style="margin-left: 20px; color: #7f8c8d;">Beispiel (Feldgröße): 10/2 = 5 ⟹ 20dB - 6dB = 14dB</span>
-                </li>
-                <li><strong>Potenzierung → Multiplikation:</strong> A<sup>n</sup> entspricht n · L(dB)
-                    <br><span style="margin-left: 20px; color: #7f8c8d;">Beispiel (Feldgröße): 2³ = 8 ⟹ 3 × 6dB = 18dB</span>
-                </li>
-                <li><strong>Wurzel → Division:</strong> ⁿ√A entspricht L(dB) / n
-                    <br><span style="margin-left: 20px; color: #7f8c8d;">Beispiel (Leistung): √4 = 2 ⟹ 6dB / 2 = 3dB (10·log₁₀)</span>
-                </li>
-                <li><strong>Feldgröße zu Leistung:</strong> L<sub>P</sub>(dB, 10·log) = 2 · L<sub>A</sub>(dB, 20·log)
-                    <br><span style="margin-left: 20px; color: #7f8c8d;">Beispiel: 6dB Feldgröße (×2) = 6dB Leistung (×4, weil P ∝ A²)</span>
-                    <br><span style="margin-left: 20px; color: #e74c3c;">ABER: 20·log₁₀(2) = 6dB ≠ 10·log₁₀(2) = 3dB - verschiedene Formeln!</span>
-                </li>
-                <li><strong>Leistung zu Feldgröße:</strong> L<sub>A</sub>(dB, 20·log) = L<sub>P</sub>(dB, 10·log)
-                    <br><span style="margin-left: 20px; color: #7f8c8d;">Beispiel: 6dB Leistung (×4) = 6dB Feldgröße (×2)</span>
-                </li>
-                <li><strong>Kettenberechnung:</strong> Gesamtverstärkung = Summe aller Einzel-dB
-                    <br><span style="margin-left: 20px; color: #7f8c8d;">Beispiel: Verstärker (+20dB) + Dämpfung (-3dB) + Filter (-6dB) = +11dB</span>
-                </li>
-                <li><strong>Umkehrung (Reziprok):</strong> 1/A entspricht -L(dB)
-                    <br><span style="margin-left: 20px; color: #7f8c8d;">Beispiel (Feldgröße): 1/10 = 0.1 ⟹ -20dB (20·log₁₀)</span>
-                </li>
-            </ul>
-        </div>
-
-        <div style="background: #f0f8ff; padding: 20px; border-radius: 6px; margin: 20px 0; border: 2px solid #3498db;">
-            <h4 style="color: #2980b9; margin: 0 0 15px 0;">Schnellrechnen mit dB</h4>
-            <ul style="margin: 0; padding-left: 25px;">
-                <li style="color: #666; line-height: 1.8; margin: 8px 0;">
-                    <strong style="color: #2980b9;">Verdopplung (×2):</strong> Feldgröße: +6 dB (20·log₁₀) | Leistung: +3 dB (10·log₁₀)
-                </li>
-                <li style="color: #666; line-height: 1.8; margin: 8px 0;">
-                    <strong style="color: #2980b9;">Halbierung (÷2):</strong> Feldgröße: -6 dB | Leistung: -3 dB
-                </li>
-                <li style="color: #666; line-height: 1.8; margin: 8px 0;">
-                    <strong style="color: #2980b9;">Faktor 10 (×10):</strong> Feldgröße: +20 dB | Leistung: +10 dB
-                </li>
-                <li style="color: #666; line-height: 1.8; margin: 8px 0;">
-                    <strong style="color: #2980b9;">Faktor 100 (×100):</strong> Feldgröße: +40 dB | Leistung: +20 dB
-                </li>
-                <li style="color: #666; line-height: 1.8; margin: 8px 0;">
-                    <strong style="color: #2980b9;">Praktischer Trick (Feldgröße):</strong> 6dB ≈ ×2, also 12dB ≈ ×4, 18dB ≈ ×8, 24dB ≈ ×16
-                </li>
-                <li style="color: #666; line-height: 1.8; margin: 8px 0;">
-                    <strong style="color: #2980b9;">Praktischer Trick (Leistung):</strong> 3dB ≈ ×2, also 6dB ≈ ×4, 9dB ≈ ×8, 12dB ≈ ×16
-                </li>
-            </ul>
+            <h3>Schnellreferenz (klicken zum Eintragen)</h3>
+            <div class="ref-grid">
+                <div class="ref-card" onclick="setDB(20)">
+                    <div class="db-value">+20 dB</div>
+                    <div class="ref-desc">Feld: ×10<br>Leist: ×100</div>
+                </div>
+                <div class="ref-card" onclick="setDB(6)">
+                    <div class="db-value">+6 dB</div>
+                    <div class="ref-desc">Feld: ×2<br>Leist: ×4</div>
+                </div>
+                <div class="ref-card" onclick="setDB(3)">
+                    <div class="db-value">+3 dB</div>
+                    <div class="ref-desc">Feld: ×1.41<br>Leist: ×2</div>
+                </div>
+                <div class="ref-card" onclick="setDB(0)">
+                    <div class="db-value">0 dB</div>
+                    <div class="ref-desc">Referenz<br>×1</div>
+                </div>
+                <div class="ref-card" onclick="setDB(-3)">
+                    <div class="db-value">-3 dB</div>
+                    <div class="ref-desc">Feld: ×0.71<br>Leist: ÷2</div>
+                </div>
+                <div class="ref-card" onclick="setDB(-6)">
+                    <div class="db-value">-6 dB</div>
+                    <div class="ref-desc">Feld: ÷2<br>Leist: ÷4</div>
+                </div>
+                <div class="ref-card" onclick="setDB(-20)">
+                    <div class="db-value">-20 dB</div>
+                    <div class="ref-desc">Feld: ÷10<br>Leist: ÷100</div>
+                </div>
+            </div>
         </div>
 
         <div class="back-link">
@@ -410,14 +286,12 @@
         const ampRef = document.getElementById('amp-ref');
         const ampDB = document.getElementById('amp-db');
         const ampRatio = document.getElementById('amp-ratio');
-        const ampPower = document.getElementById('amp-power');
 
         // Power calculator
         const powLinear = document.getElementById('pow-linear');
         const powRef = document.getElementById('pow-ref');
         const powDB = document.getElementById('pow-db');
         const powRatio = document.getElementById('pow-ratio');
-        const powAmplitude = document.getElementById('pow-amplitude');
 
         let updateInProgress = false;
 
@@ -432,11 +306,9 @@
             if (!isNaN(A) && A > 0 && A0 > 0) {
                 const db = 20 * Math.log10(A / A0);
                 const ratio = A / A0;
-                const power = ratio * ratio;
 
                 ampDB.value = db.toFixed(2);
                 ampRatio.textContent = ratio.toFixed(4);
-                ampPower.textContent = power.toFixed(4);
             }
 
             updateInProgress = false;
@@ -456,11 +328,9 @@
             if (!isNaN(db) && A0 > 0) {
                 const ratio = Math.pow(10, db / 20);
                 const A = ratio * A0;
-                const power = ratio * ratio;
 
                 ampLinear.value = A.toFixed(6);
                 ampRatio.textContent = ratio.toFixed(4);
-                ampPower.textContent = power.toFixed(4);
             }
 
             updateInProgress = false;
@@ -477,11 +347,9 @@
             if (!isNaN(P) && P > 0 && P0 > 0) {
                 const db = 10 * Math.log10(P / P0);
                 const ratio = P / P0;
-                const amplitude = Math.sqrt(ratio);
 
                 powDB.value = db.toFixed(2);
                 powRatio.textContent = ratio.toFixed(4);
-                powAmplitude.textContent = amplitude.toFixed(4);
             }
 
             updateInProgress = false;
@@ -501,11 +369,9 @@
             if (!isNaN(db) && P0 > 0) {
                 const ratio = Math.pow(10, db / 10);
                 const P = ratio * P0;
-                const amplitude = Math.sqrt(ratio);
 
                 powLinear.value = P.toFixed(6);
                 powRatio.textContent = ratio.toFixed(4);
-                powAmplitude.textContent = amplitude.toFixed(4);
             }
 
             updateInProgress = false;

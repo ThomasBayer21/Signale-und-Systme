@@ -87,6 +87,30 @@
             line-height: 1.6;
             font-size: 0.95em;
         }
+        .properties {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 6px;
+            margin-bottom: 35px;
+            border: 1px solid #ddd;
+        }
+        .properties h3 {
+            color: #2c3e50;
+            margin: 0 0 15px 0;
+            font-size: 1.1em;
+        }
+        .properties ul {
+            margin: 0;
+            padding-left: 25px;
+        }
+        .properties li {
+            color: #555;
+            line-height: 1.8;
+            margin: 8px 0;
+        }
+        .properties strong {
+            color: #2c3e50;
+        }
     </style>
 </head>
 <body>
@@ -96,6 +120,19 @@
     <div class="subtitle">Von analog zu digital und zurück</div>
 
     <div class="container">
+        <div class="properties">
+            <h3>Wichtige Konzepte</h3>
+            <ul>
+                <li><strong>Abtastung (Sampling):</strong> x[n] = x(nT) - Diskretisierung in der Zeit</li>
+                <li><strong>Abtastrate:</strong> f<sub>s</sub> = 1/T - Anzahl der Abtastwerte pro Sekunde</li>
+                <li><strong>Nyquist-Shannon-Theorem:</strong> f<sub>s</sub> ≥ 2·f<sub>max</sub> - Mindestrate zur verlustfreien Rekonstruktion</li>
+                <li><strong>Aliasing:</strong> Überlappung von Spektren bei Unterabtastung (f<sub>s</sub> < 2·f<sub>max</sub>)</li>
+                <li><strong>Ideale Rekonstruktion:</strong> Interpolation mit sinc-Funktionen (Tiefpassfilterung)</li>
+                <li><strong>Sample-and-Hold:</strong> Praktische Rekonstruktion mit konstanten Segmenten</li>
+                <li><strong>Quantisierung:</strong> Diskretisierung in der Amplitude (separate Operation)</li>
+            </ul>
+        </div>
+
         <div class="intro">
             Die digitale Signalverarbeitung beschäftigt sich mit der Umwandlung analoger Signale in
             digitale Form und deren Verarbeitung. Zentrale Konzepte sind die Abtastung (Sampling),

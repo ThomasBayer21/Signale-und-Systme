@@ -186,6 +186,47 @@
         .back-link a:hover {
             text-decoration: underline;
         }
+        .mode-toggle {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin: 20px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            border: 2px solid #ddd;
+        }
+        .mode-toggle label {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+        .toggle-switch {
+            position: relative;
+            width: 60px;
+            height: 30px;
+            background: #3498db;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .toggle-switch.power {
+            background: #e74c3c;
+        }
+        .toggle-slider {
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 24px;
+            height: 24px;
+            background: white;
+            border-radius: 50%;
+            transition: transform 0.3s;
+        }
+        .toggle-switch.power .toggle-slider {
+            transform: translateX(30px);
+        }
     </style>
 </head>
 <body>
@@ -195,13 +236,20 @@
     <div class="container">
         <div class="info-box">
             <h3>Anleitung</h3>
-            <p>Bewege den Schieberegler und beobachte die Unterschiede zwischen linearer und logarithmischer Darstellung</p>
-            <p>Die Dezibel-Skala komprimiert große Wertebereiche und macht Verhältnisse besser vergleichbar</p>
+            <p>Wähle den Modus (Feldgröße oder Leistung) und bewege den Schieberegler</p>
+            <p>Beobachte die Unterschiede zwischen linearer und logarithmischer Darstellung</p>
+        </div>
+
+        <div class="mode-toggle">
+            <label>Feldgröße (20·log)</label>
+            <div class="toggle-switch" id="mode-toggle" onclick="toggleMode()">
+                <div class="toggle-slider"></div>
+            </div>
+            <label>Leistung (10·log)</label>
         </div>
 
         <div class="equation-box">
-            <div class="equation">Spannung/Amplitude: L<sub>dB</sub> = 20 · log<sub>10</sub>(A / A<sub>0</sub>)</div>
-            <div class="equation">Leistung: L<sub>dB</sub> = 10 · log<sub>10</sub>(P / P<sub>0</sub>)</div>
+            <div class="equation" id="formula">Feldgröße: L<sub>dB</sub> = 20 · log<sub>10</sub>(A / A<sub>0</sub>)</div>
         </div>
 
         <div class="controls">
@@ -248,17 +296,44 @@
         const dbCtx = dbCanvas.getContext('2d');
 
         let amplitude = 1.0;
+        let isPowerMode = false;
 
-        document.getElementById('amplitude').addEventListener('input', (e) => {
-            amplitude = parseFloat(e.target.value);
+        function toggleMode() {
+            isPowerMode = !isPowerMode;
+            const toggle = document.getElementById('mode-toggle');
+            const formula = document.getElementById('formula');
+
+            if (isPowerMode) {
+                toggle.classList.add('power');
+                formula.innerHTML = 'Leistung: L<sub>dB</sub> = 10 · log<sub>10</sub>(P / P<sub>0</sub>)';
+            } else {
+                toggle.classList.remove('power');
+                formula.innerHTML = 'Feldgröße: L<sub>dB</sub> = 20 · log<sub>10</sub>(A / A<sub>0</sub>)';
+            }
+
+            updateValues();
+            draw();
+        }
+
+        function updateValues() {
             document.getElementById('amp-value').textContent = amplitude.toFixed(2);
 
-            const db = 20 * Math.log10(amplitude);
+            let db;
+            if (isPowerMode) {
+                const power = amplitude * amplitude;
+                db = 10 * Math.log10(power);
+            } else {
+                db = 20 * Math.log10(amplitude);
+            }
             document.getElementById('db-value').textContent = db.toFixed(1);
 
             const power = amplitude * amplitude;
             document.getElementById('power-value').textContent = power.toFixed(2);
+        }
 
+        document.getElementById('amplitude').addEventListener('input', (e) => {
+            amplitude = parseFloat(e.target.value);
+            updateValues();
             draw();
         });
 
@@ -390,7 +465,13 @@
             dbCtx.restore();
 
             // Bar for current amplitude in dB
-            const currentDb = 20 * Math.log10(amplitude);
+            let currentDb;
+            if (isPowerMode) {
+                const power = amplitude * amplitude;
+                currentDb = 10 * Math.log10(power);
+            } else {
+                currentDb = 20 * Math.log10(amplitude);
+            }
             const barWidth = 80;
 
             const refY = margin + ((dbMax - 0) / dbRange) * (height - 2 * margin);

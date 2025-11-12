@@ -87,6 +87,30 @@
             line-height: 1.6;
             font-size: 0.95em;
         }
+        .properties {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 6px;
+            margin-bottom: 35px;
+            border: 1px solid #ddd;
+        }
+        .properties h3 {
+            color: #2c3e50;
+            margin: 0 0 15px 0;
+            font-size: 1.1em;
+        }
+        .properties ul {
+            margin: 0;
+            padding-left: 25px;
+        }
+        .properties li {
+            color: #555;
+            line-height: 1.8;
+            margin: 8px 0;
+        }
+        .properties strong {
+            color: #2c3e50;
+        }
     </style>
 </head>
 <body>
@@ -96,6 +120,19 @@
     <div class="subtitle">Verarbeitung und Transformation von Signalen</div>
 
     <div class="container">
+        <div class="properties">
+            <h3>Wichtige Konzepte</h3>
+            <ul>
+                <li><strong>Faltung:</strong> y(t) = x(t) * h(t) = ∫ x(τ)·h(t-τ) dτ - Systemantwort auf beliebige Eingänge</li>
+                <li><strong>Impulsantwort h(t):</strong> Vollständige Charakterisierung linearer zeitinvarianter Systeme</li>
+                <li><strong>Faltungssatz:</strong> x(t) * h(t) ↔ X(ω)·H(ω) - Faltung im Zeitbereich = Multiplikation im Frequenzbereich</li>
+                <li><strong>Kommutativität:</strong> x(t) * h(t) = h(t) * x(t) - Reihenfolge spielt keine Rolle</li>
+                <li><strong>Assoziativität:</strong> (x * h₁) * h₂ = x * (h₁ * h₂) - Kettenschaltung von Systemen</li>
+                <li><strong>Distributivität:</strong> x * (h₁ + h₂) = x * h₁ + x * h₂ - Parallelschaltung von Systemen</li>
+                <li><strong>Neutrales Element:</strong> x(t) * δ(t) = x(t) - Dirac-Impuls ist neutral</li>
+            </ul>
+        </div>
+
         <div class="intro">
             Signaloperationen beschreiben, wie Signale mathematisch verarbeitet und transformiert werden.
             Die Faltung ist eine der wichtigsten Operationen in der Signalverarbeitung und beschreibt

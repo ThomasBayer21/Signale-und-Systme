@@ -87,6 +87,30 @@
             line-height: 1.6;
             font-size: 0.95em;
         }
+        .properties {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 6px;
+            margin-bottom: 35px;
+            border: 1px solid #ddd;
+        }
+        .properties h3 {
+            color: #2c3e50;
+            margin: 0 0 15px 0;
+            font-size: 1.1em;
+        }
+        .properties ul {
+            margin: 0;
+            padding-left: 25px;
+        }
+        .properties li {
+            color: #555;
+            line-height: 1.8;
+            margin: 8px 0;
+        }
+        .properties strong {
+            color: #2c3e50;
+        }
     </style>
 </head>
 <body>
@@ -96,6 +120,19 @@
     <div class="subtitle">Transformation zwischen Zeit- und Frequenzbereich</div>
 
     <div class="container">
+        <div class="properties">
+            <h3>Wichtige Konzepte</h3>
+            <ul>
+                <li><strong>Fourier-Transformation:</strong> X(ω) = ∫ x(t)·e^(-jωt) dt - Transformation in Frequenzbereich</li>
+                <li><strong>Inverse Fourier-Transformation:</strong> x(t) = 1/(2π) ∫ X(ω)·e^(jωt) dω - Rücktransformation in Zeitbereich</li>
+                <li><strong>Frequenzspektrum:</strong> Darstellung der Amplitude und Phase für jede Frequenzkomponente</li>
+                <li><strong>Dualität:</strong> Zeit- und Frequenzbereich sind über Fourier-Transformation verbunden</li>
+                <li><strong>Periodische Signale:</strong> Diskrete Spektrallinien (Fourier-Reihe)</li>
+                <li><strong>Nichtperiodische Signale:</strong> Kontinuierliches Spektrum (Fourier-Transformation)</li>
+                <li><strong>Wichtige Paare:</strong> Rechteck ↔ Sinc, Gaußimpuls ↔ Gaußimpuls, δ(t) ↔ 1</li>
+            </ul>
+        </div>
+
         <div class="intro">
             Die Frequenzanalyse ermöglicht die Zerlegung von Signalen in ihre Frequenzkomponenten.
             Die Fourier-Transformation ist das zentrale Werkzeug, um Signale vom Zeitbereich in den
